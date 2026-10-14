@@ -1,0 +1,9 @@
+# Which part of M5 the project models. Reason: the full data (30,490 series x 1,941 days, about 59M
+# rows) is more than an 8 GB laptop handles comfortably in pandas/LightGBM; one state and one
+# category is a few thousand series, still big enough for a global model and an honest backtest.
+state: CA
+category: FOODS
+reason: >-
+  California has the most stores (4) of the three states, and FOODS is the largest category and the
+  most frequently bought, so it has the most regular demand and the clearest inventory question
+  (perishable-style, high turnover). Hobbies and household goods can be added later as a check.

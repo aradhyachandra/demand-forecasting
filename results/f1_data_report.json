@@ -1,0 +1,172 @@
+{
+  "raw_files": {
+    "calendar": {
+      "bytes": 103469,
+      "data_rows": 1969,
+      "file": "calendar.csv",
+      "sha256": "d12b5914ef03e66649adf5dd9e996e6602251c22b7a6af8f1f7e3aa12f8860f5"
+    },
+    "prices": {
+      "bytes": 203395785,
+      "data_rows": 6841121,
+      "file": "sell_prices.csv",
+      "sha256": "9da3ad1f8b8ccacdbdc70612191dd375ec24a4ac6625c24b75b3bc60b0bed2ef"
+    },
+    "sales": {
+      "bytes": 121736518,
+      "data_rows": 30490,
+      "file": "sales_train_evaluation.csv",
+      "sha256": "4b4a47c44c38380d2a9168216fea8c9ff2f31b1ddb772f8a0995952a038b8aa0"
+    }
+  },
+  "raw_days": 1941,
+  "calendar_days": 1969,
+  "all_series": 30490,
+  "scope_options": [
+    {
+      "state_id": "CA",
+      "cat_id": "FOODS",
+      "n_series": 5748,
+      "n_stores": 4,
+      "n_items": 1437
+    },
+    {
+      "state_id": "CA",
+      "cat_id": "HOBBIES",
+      "n_series": 2260,
+      "n_stores": 4,
+      "n_items": 565
+    },
+    {
+      "state_id": "CA",
+      "cat_id": "HOUSEHOLD",
+      "n_series": 4188,
+      "n_stores": 4,
+      "n_items": 1047
+    },
+    {
+      "state_id": "TX",
+      "cat_id": "FOODS",
+      "n_series": 4311,
+      "n_stores": 3,
+      "n_items": 1437
+    },
+    {
+      "state_id": "TX",
+      "cat_id": "HOBBIES",
+      "n_series": 1695,
+      "n_stores": 3,
+      "n_items": 565
+    },
+    {
+      "state_id": "TX",
+      "cat_id": "HOUSEHOLD",
+      "n_series": 3141,
+      "n_stores": 3,
+      "n_items": 1047
+    },
+    {
+      "state_id": "WI",
+      "cat_id": "FOODS",
+      "n_series": 4311,
+      "n_stores": 3,
+      "n_items": 1437
+    },
+    {
+      "state_id": "WI",
+      "cat_id": "HOBBIES",
+      "n_series": 1695,
+      "n_stores": 3,
+      "n_items": 565
+    },
+    {
+      "state_id": "WI",
+      "cat_id": "HOUSEHOLD",
+      "n_series": 3141,
+      "n_stores": 3,
+      "n_items": 1047
+    }
+  ],
+  "scope": {
+    "state": "CA",
+    "category": "FOODS"
+  },
+  "slice_checks": {
+    "n_rows": 11156868,
+    "n_series": 5748,
+    "n_days": 1941,
+    "first_date": "2011-01-29",
+    "last_date": "2016-05-22",
+    "duplicate_series_days": 0,
+    "null_units": 0,
+    "negative_units": 0,
+    "rows_without_date": 0,
+    "zero_unit_rows": 6705961,
+    "unlisted_rows": 2572521,
+    "sales_while_unlisted": 0,
+    "total_units": 19535863,
+    "snap_rows": 3678720,
+    "event_rows": 908184,
+    "price_key_duplicates": 0,
+    "unlisted_after_first_listing": 0,
+    "series_with_listing_gaps": 0,
+    "series_never_listed": 0,
+    "listed_rows": 8584347,
+    "listed_zero_rows": 4133440
+  },
+  "slice_per_store": [
+    {
+      "store_id": "CA_1",
+      "n_series": 1437,
+      "units": 5471661
+    },
+    {
+      "store_id": "CA_2",
+      "n_series": 1437,
+      "units": 3567477
+    },
+    {
+      "store_id": "CA_3",
+      "n_series": 1437,
+      "units": 7625660
+    },
+    {
+      "store_id": "CA_4",
+      "n_series": 1437,
+      "units": 2871065
+    }
+  ],
+  "slice_per_dept": [
+    {
+      "dept_id": "FOODS_1",
+      "n_series": 864,
+      "units": 2410777
+    },
+    {
+      "dept_id": "FOODS_2",
+      "n_series": 1592,
+      "units": 3018605
+    },
+    {
+      "dept_id": "FOODS_3",
+      "n_series": 3292,
+      "units": 14106481
+    }
+  ],
+  "holdout_reserved": {
+    "days": 28,
+    "first_d": 1914,
+    "last_d": 1941,
+    "first_date": "2016-04-25",
+    "last_date": "2016-05-22"
+  },
+  "parquet": {
+    "path": "data/processed/m5_slice.parquet",
+    "bytes_on_disk": 13130752,
+    "rows": 11156868
+  },
+  "memory_estimate": {
+    "pandas_bytes_per_row_with_categories": 80.0,
+    "pandas_total_gb": 0.89
+  }
+}
