@@ -1,0 +1,12 @@
+# Where the raw M5 files live and how DuckDB runs. Raw files are never committed (data/raw/ is gitignored).
+raw_dir: data/raw
+files:
+  sales: sales_train_evaluation.csv   # daily unit sales per item-store, d_1..d_1941
+  calendar: calendar.csv              # one row per day: date, week id, events, SNAP days
+  prices: sell_prices.csv             # weekly price per item-store
+processed_dir: data/processed
+slice_parquet: m5_slice.parquet
+duckdb:
+  memory_limit: 2GB   # reason: leaves headroom on an 8 GB laptop (and on the 3 GB test machine)
+  work_db: work.duckdb  # scratch database under processed_dir (gitignored), rebuilt each run
+  threads: 4          # reason: typical laptop core count; results do not depend on it

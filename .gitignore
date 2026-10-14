@@ -8,3 +8,6 @@ __pycache__/
 .claude/
 *.duckdb
 *.duckdb.wal
+*.egg-info/
+results/*.tmp
+.tmp/

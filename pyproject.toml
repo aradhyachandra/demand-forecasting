@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forecast"
+version = "0.1.0"
+description = "Demand forecasting and inventory planning on the M5 (Walmart) data"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "realdata: reads the real raw files in data/raw/ (slow; run with: pytest -m realdata)",
+]
+addopts = "-m 'not realdata'"

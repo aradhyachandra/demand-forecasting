@@ -29,9 +29,11 @@ every business assumption sits in config with a reason; the final test period is
   https://www.kaggle.com/c/m5-forecasting-accuracy . Files: sales_train_evaluation.csv (daily unit
   sales of ~30,490 item-store series, 1,941 days), calendar.csv (dates, events, SNAP days),
   sell_prices.csv (weekly prices per item-store).
-- Download needs a Kaggle account and accepting the competition rules. TO VERIFY: the data's terms of
-  use for a public portfolio repo. The raw files are never committed (data/raw/ gitignored); only code,
-  small aggregated results and figures are.
+- Download needs a Kaggle account and accepting the competition rules. Terms (checked 2026-10-14 on the
+  competition's Rules page): data use is "Competition Use, Academic, Non-Commercial Use", and the data
+  may not be redistributed or published. So the raw and processed data are never committed (data/raw/
+  and data/processed/ gitignored); only code, small aggregated results and figures are, and the README
+  tells readers to download the data from Kaggle themselves.
 - Scope to fit an 8 GB laptop: one state (California, 4 stores) and the FOODS category, or a similar
   slice decided in F1 (target: a few thousand series). Record the slice in config.
 
@@ -107,7 +109,7 @@ every business assumption sits in config with a reason; the final test period is
   metrics.
 - Memory: the full dataset is large; the slice and DuckDB keep it manageable.
 - Cost assumptions dominate the money answer: show scenarios, not single numbers.
-- Data terms: confirm before publishing anything beyond aggregated results.
+- Data terms: non-commercial use, no redistribution (checked in F1); publish only aggregated results.
 
 ## 10. README outline
 
