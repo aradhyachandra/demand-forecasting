@@ -1,0 +1,1086 @@
+{
+  "training": {
+    "first_d": 1,
+    "last_d": 1913,
+    "last_train_d": 1913,
+    "first_date": "2011-01-29",
+    "last_date": "2016-04-24",
+    "holdout_days": 28,
+    "listed_series_days": 8423403,
+    "n_series": 5748,
+    "units": 19196302
+  },
+  "classes": [
+    {
+      "demand_class": "smooth",
+      "n_series": 531,
+      "units": 6442274,
+      "share_series": 0.09237995824634655,
+      "share_units": 0.3355997420753226
+    },
+    {
+      "demand_class": "erratic",
+      "n_series": 274,
+      "units": 3186455,
+      "share_series": 0.0476687543493389,
+      "share_units": 0.1659931688926336
+    },
+    {
+      "demand_class": "intermittent",
+      "n_series": 3360,
+      "units": 5091672,
+      "share_series": 0.5845511482254697,
+      "share_units": 0.2652423367792401
+    },
+    {
+      "demand_class": "lumpy",
+      "n_series": 1583,
+      "units": 4475901,
+      "share_series": 0.2754001391788448,
+      "share_units": 0.2331647522528037
+    },
+    {
+      "demand_class": "too_few_sales",
+      "n_series": 0,
+      "units": 0,
+      "share_series": 0.0,
+      "share_units": 0.0
+    }
+  ],
+  "classes_by_dept": [
+    {
+      "dept_id": "FOODS_1",
+      "smooth": 29,
+      "erratic": 59,
+      "intermittent": 403,
+      "lumpy": 373,
+      "too_few_sales": 0
+    },
+    {
+      "dept_id": "FOODS_2",
+      "smooth": 99,
+      "erratic": 10,
+      "intermittent": 1241,
+      "lumpy": 242,
+      "too_few_sales": 0
+    },
+    {
+      "dept_id": "FOODS_3",
+      "smooth": 403,
+      "erratic": 205,
+      "intermittent": 1716,
+      "lumpy": 968,
+      "too_few_sales": 0
+    }
+  ],
+  "classes_median": {
+    "adi": 2.0525751072961373,
+    "cv2": 0.42075131664876914,
+    "share_listed_days_with_sales": 0.5172918831023519
+  },
+  "weekday_profile": [
+    {
+      "weekday": "Saturday",
+      "units": 3170924.0,
+      "series_days": 1160532,
+      "rate": 2.7323020821,
+      "index": 1.1948923969
+    },
+    {
+      "weekday": "Sunday",
+      "units": 2968847.0,
+      "series_days": 1052205,
+      "rate": 2.8215480824,
+      "index": 1.2339215247
+    },
+    {
+      "weekday": "Monday",
+      "units": 2299113.0,
+      "series_days": 1048467,
+      "rate": 2.1928329647,
+      "index": 0.9589713576
+    },
+    {
+      "weekday": "Tuesday",
+      "units": 2294745.0,
+      "series_days": 1131630,
+      "rate": 2.0278226982,
+      "index": 0.8868089441
+    },
+    {
+      "weekday": "Wednesday",
+      "units": 2200467.0,
+      "series_days": 1110422,
+      "rate": 1.9816493189,
+      "index": 0.8666163672
+    },
+    {
+      "weekday": "Thursday",
+      "units": 2164307.0,
+      "series_days": 1080685,
+      "rate": 2.0027177207,
+      "index": 0.8758300164
+    },
+    {
+      "weekday": "Friday",
+      "units": 2619558.0,
+      "series_days": 1164491,
+      "rate": 2.2495304816,
+      "index": 0.9837663582
+    }
+  ],
+  "month_profile": [
+    {
+      "month": 1,
+      "index": 1.0105775223,
+      "min": 0.9841315904,
+      "max": 1.0379105452,
+      "n_years": 4
+    },
+    {
+      "month": 2,
+      "index": 1.0067170042,
+      "min": 0.9453418752,
+      "max": 1.0861131842,
+      "n_years": 4
+    },
+    {
+      "month": 3,
+      "index": 1.0138700444,
+      "min": 0.9637942648,
+      "max": 1.0658488803,
+      "n_years": 4
+    },
+    {
+      "month": 4,
+      "index": 0.9996332513,
+      "min": 0.9312774513,
+      "max": 1.0781058063,
+      "n_years": 4
+    },
+    {
+      "month": 5,
+      "index": 0.9919850155,
+      "min": 0.9540879106,
+      "max": 1.0422652855,
+      "n_years": 4
+    },
+    {
+      "month": 6,
+      "index": 1.0697889789,
+      "min": 1.0465789331,
+      "max": 1.0929027526,
+      "n_years": 4
+    },
+    {
+      "month": 7,
+      "index": 1.0480802461,
+      "min": 1.0351422823,
+      "max": 1.0650680763,
+      "n_years": 4
+    },
+    {
+      "month": 8,
+      "index": 1.0712718617,
+      "min": 1.0474417902,
+      "max": 1.1004477534,
+      "n_years": 4
+    },
+    {
+      "month": 9,
+      "index": 1.033253411,
+      "min": 0.9976426401,
+      "max": 1.0676656204,
+      "n_years": 4
+    },
+    {
+      "month": 10,
+      "index": 0.9670633021,
+      "min": 0.9045320236,
+      "max": 1.0630731939,
+      "n_years": 4
+    },
+    {
+      "month": 11,
+      "index": 0.9036486895,
+      "min": 0.8314061566,
+      "max": 0.9558263432,
+      "n_years": 4
+    },
+    {
+      "month": 12,
+      "index": 0.8938376406,
+      "min": 0.8563771586,
+      "max": 0.9318821462,
+      "n_years": 4
+    }
+  ],
+  "month_profile_years": [
+    2012,
+    2013,
+    2014,
+    2015
+  ],
+  "year_rates": [
+    {
+      "year": 2011,
+      "days": 337,
+      "rate": 2.785853421363982,
+      "units_per_day": 8042.13056379822,
+      "listed_series_per_day": 2886.774480712166
+    },
+    {
+      "year": 2012,
+      "days": 366,
+      "rate": 2.8317644807126823,
+      "units_per_day": 10227.459016393443,
+      "listed_series_per_day": 3611.691256830601
+    },
+    {
+      "year": 2013,
+      "days": 365,
+      "rate": 2.414599944313666,
+      "units_per_day": 10454.093150684932,
+      "listed_series_per_day": 4329.534246575343
+    },
+    {
+      "year": 2014,
+      "days": 365,
+      "rate": 2.0778110352143933,
+      "units_per_day": 10517.367123287671,
+      "listed_series_per_day": 5061.753424657534
+    },
+    {
+      "year": 2015,
+      "days": 365,
+      "rate": 1.8539342917059234,
+      "units_per_day": 10361.643835616438,
+      "listed_series_per_day": 5589.002739726027
+    },
+    {
+      "year": 2016,
+      "days": 115,
+      "rate": 1.9765780215623228,
+      "units_per_day": 11358.878260869566,
+      "listed_series_per_day": 5746.739130434783
+    }
+  ],
+  "snap": {
+    "snap_rate": 2.441982590585977,
+    "non_snap_rate": 2.210854452506273,
+    "lift_pct": 10.454244865268802,
+    "snap_days": 578,
+    "non_snap_days": 1181,
+    "by_weekday": [
+      {
+        "weekday": "Saturday",
+        "snap_rate": 2.8950461323892287,
+        "non_snap_rate": 2.655270080183625,
+        "lift_pct": 9.030194479840725
+      },
+      {
+        "weekday": "Sunday",
+        "snap_rate": 2.9767405998612144,
+        "non_snap_rate": 2.7441355281300925,
+        "lift_pct": 8.476442557107355
+      },
+      {
+        "weekday": "Monday",
+        "snap_rate": 2.329552633173048,
+        "non_snap_rate": 2.1252960270392736,
+        "lift_pct": 9.610736741380999
+      },
+      {
+        "weekday": "Tuesday",
+        "snap_rate": 2.1901499422092288,
+        "non_snap_rate": 1.9449678063469014,
+        "lift_pct": 12.605973994131858
+      },
+      {
+        "weekday": "Wednesday",
+        "snap_rate": 2.128752667901756,
+        "non_snap_rate": 1.9083764830319825,
+        "lift_pct": 11.5478359133647
+      },
+      {
+        "weekday": "Thursday",
+        "snap_rate": 2.176441308230609,
+        "non_snap_rate": 1.9224479304070188,
+        "lift_pct": 13.211976969894579
+      },
+      {
+        "weekday": "Friday",
+        "snap_rate": 2.4034696203301453,
+        "non_snap_rate": 2.175487794641699,
+        "lift_pct": 10.479572730767472
+      }
+    ]
+  },
+  "snap_by_dept": [
+    {
+      "dept_id": "FOODS_1",
+      "snap_rate": 1.7106156267182375,
+      "non_snap_rate": 1.6896878416130208,
+      "lift_pct": 1.2385592527693445,
+      "snap_days": 578,
+      "non_snap_days": 1181
+    },
+    {
+      "dept_id": "FOODS_2",
+      "snap_rate": 1.610734272336226,
+      "non_snap_rate": 1.3328759007639794,
+      "lift_pct": 20.846529779177736,
+      "snap_days": 578,
+      "non_snap_days": 1181
+    },
+    {
+      "dept_id": "FOODS_3",
+      "snap_rate": 3.0011277145075534,
+      "non_snap_rate": 2.7299921387125643,
+      "lift_pct": 9.931734672424874,
+      "snap_days": 578,
+      "non_snap_days": 1181
+    }
+  ],
+  "events": {
+    "n_event_days": 154,
+    "n_occurrences_used": 158,
+    "by_event": [
+      {
+        "event_name": "LaborDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 16.9701673748,
+        "min_lift_pct": 9.153118997,
+        "max_lift_pct": 23.5822308029
+      },
+      {
+        "event_name": "PresidentsDay",
+        "event_type": "National",
+        "n": 6,
+        "mean_lift_pct": 14.0727002428,
+        "min_lift_pct": 8.7950898711,
+        "max_lift_pct": 18.8877770259
+      },
+      {
+        "event_name": "VeteransDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 9.336910085,
+        "min_lift_pct": -4.904094665,
+        "max_lift_pct": 17.5061001829
+      },
+      {
+        "event_name": "MartinLutherKingDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 8.0454759989,
+        "min_lift_pct": 0.3694213689,
+        "max_lift_pct": 19.3766357686
+      },
+      {
+        "event_name": "MemorialDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 6.7021037548,
+        "min_lift_pct": 2.8084239265,
+        "max_lift_pct": 12.669886955
+      },
+      {
+        "event_name": "ColumbusDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 4.5850497009,
+        "min_lift_pct": -2.1417221328,
+        "max_lift_pct": 14.3478322324
+      },
+      {
+        "event_name": "LentWeek2",
+        "event_type": "Religious",
+        "n": 6,
+        "mean_lift_pct": 3.1778200641,
+        "min_lift_pct": -9.4860713293,
+        "max_lift_pct": 12.9192522142
+      },
+      {
+        "event_name": "StPatricksDay",
+        "event_type": "Cultural",
+        "n": 6,
+        "mean_lift_pct": 2.5463628505,
+        "min_lift_pct": -3.5088174947,
+        "max_lift_pct": 6.949345356
+      },
+      {
+        "event_name": "Purim End",
+        "event_type": "Religious",
+        "n": 6,
+        "mean_lift_pct": 2.1301354089,
+        "min_lift_pct": -2.3201135923,
+        "max_lift_pct": 8.0217668284
+      },
+      {
+        "event_name": "LentStart",
+        "event_type": "Religious",
+        "n": 6,
+        "mean_lift_pct": 1.1904633731,
+        "min_lift_pct": -13.4234390906,
+        "max_lift_pct": 32.1778386247
+      },
+      {
+        "event_name": "NBAFinalsEnd",
+        "event_type": "Sporting",
+        "n": 5,
+        "mean_lift_pct": 1.1639380164,
+        "min_lift_pct": -4.1723741385,
+        "max_lift_pct": 14.0731928046
+      },
+      {
+        "event_name": "EidAlAdha",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": 0.3354736991,
+        "min_lift_pct": -5.961017121,
+        "max_lift_pct": 8.2732093288
+      },
+      {
+        "event_name": "IndependenceDay",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": 0.325883793,
+        "min_lift_pct": -16.2787820727,
+        "max_lift_pct": 11.6810217633
+      },
+      {
+        "event_name": "Chanukah End",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": 0.209748565,
+        "min_lift_pct": -9.4428413847,
+        "max_lift_pct": 7.5793182954
+      },
+      {
+        "event_name": "Ramadan starts",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": -0.3008963732,
+        "min_lift_pct": -9.2485179724,
+        "max_lift_pct": 5.3907573652
+      },
+      {
+        "event_name": "Eid al-Fitr",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": -0.7727053444,
+        "min_lift_pct": -11.5989242135,
+        "max_lift_pct": 13.0215160373
+      },
+      {
+        "event_name": "OrthodoxChristmas",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": -0.8214104249,
+        "min_lift_pct": -11.9409124907,
+        "max_lift_pct": 8.5882231936
+      },
+      {
+        "event_name": "NBAFinalsStart",
+        "event_type": "Sporting",
+        "n": 5,
+        "mean_lift_pct": -2.9662210088,
+        "min_lift_pct": -12.6619506082,
+        "max_lift_pct": 12.5163558506
+      },
+      {
+        "event_name": "Pesach End",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": -3.2385279044,
+        "min_lift_pct": -10.8611218493,
+        "max_lift_pct": 1.1434711107
+      },
+      {
+        "event_name": "Halloween",
+        "event_type": "Cultural",
+        "n": 5,
+        "mean_lift_pct": -4.6717738784,
+        "min_lift_pct": -16.1972729708,
+        "max_lift_pct": 5.2585832632
+      },
+      {
+        "event_name": "Father's day",
+        "event_type": "Cultural",
+        "n": 5,
+        "mean_lift_pct": -5.5370520527,
+        "min_lift_pct": -9.2958888421,
+        "max_lift_pct": -1.8540513233
+      },
+      {
+        "event_name": "SuperBowl",
+        "event_type": "Sporting",
+        "n": 6,
+        "mean_lift_pct": -5.770164828,
+        "min_lift_pct": -18.0100341638,
+        "max_lift_pct": 5.5283014764
+      },
+      {
+        "event_name": "OrthodoxEaster",
+        "event_type": "Religious",
+        "n": 5,
+        "mean_lift_pct": -6.9614564833,
+        "min_lift_pct": -12.306239529,
+        "max_lift_pct": -0.7719497168
+      },
+      {
+        "event_name": "ValentinesDay",
+        "event_type": "Cultural",
+        "n": 6,
+        "mean_lift_pct": -7.4668230656,
+        "min_lift_pct": -13.9577926464,
+        "max_lift_pct": -3.6263309702
+      },
+      {
+        "event_name": "Cinco De Mayo",
+        "event_type": "Cultural",
+        "n": 5,
+        "mean_lift_pct": -9.3768128358,
+        "min_lift_pct": -21.1100960688,
+        "max_lift_pct": -2.8233705446
+      },
+      {
+        "event_name": "Easter",
+        "event_type": "Cultural",
+        "n": 6,
+        "mean_lift_pct": -10.1328625553,
+        "min_lift_pct": -20.7521906202,
+        "max_lift_pct": -0.188429845
+      },
+      {
+        "event_name": "Mother's day",
+        "event_type": "Cultural",
+        "n": 5,
+        "mean_lift_pct": -13.9735649954,
+        "min_lift_pct": -23.4841530095,
+        "max_lift_pct": -5.8298970793
+      },
+      {
+        "event_name": "Thanksgiving",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": -25.2783303952,
+        "min_lift_pct": -30.4055780117,
+        "max_lift_pct": -19.199987356
+      },
+      {
+        "event_name": "NewYear",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": -26.4447810512,
+        "min_lift_pct": -42.1012594401,
+        "max_lift_pct": -16.9925480706
+      },
+      {
+        "event_name": "Christmas",
+        "event_type": "National",
+        "n": 5,
+        "mean_lift_pct": -99.9303774949,
+        "min_lift_pct": -99.9439350043,
+        "max_lift_pct": -99.9222714654
+      }
+    ],
+    "by_type": [
+      {
+        "event_type": "Cultural",
+        "n": 38,
+        "mean_lift_pct": -6.792525143
+      },
+      {
+        "event_type": "National",
+        "n": 51,
+        "mean_lift_pct": -8.7059468571
+      },
+      {
+        "event_type": "Religious",
+        "n": 53,
+        "mean_lift_pct": -0.3539312878
+      },
+      {
+        "event_type": "Sporting",
+        "n": 16,
+        "mean_lift_pct": -2.7270252457
+      }
+    ]
+  },
+  "price_cuts": {
+    "buckets": [
+      {
+        "label": "5-10%",
+        "n_cuts": 1833,
+        "n_series": 1295,
+        "pooled_lift_pct": 16.676312100518274,
+        "median_ratio": 1.0,
+        "share_price_held": 0.9650845608292417
+      },
+      {
+        "label": "10-20%",
+        "n_cuts": 2430,
+        "n_series": 1554,
+        "pooled_lift_pct": -20.738285475035767,
+        "median_ratio": 0.7812500000000001,
+        "share_price_held": 0.948559670781893
+      },
+      {
+        "label": "20%+",
+        "n_cuts": 1422,
+        "n_series": 739,
+        "pooled_lift_pct": -21.68968688949533,
+        "median_ratio": 0.6545454545454547,
+        "share_price_held": 0.8326300984528833
+      }
+    ],
+    "all_cuts": {
+      "n_cuts": 5685,
+      "n_series": 2736,
+      "pooled_lift_pct": -12.842691562704722,
+      "median_ratio": 0.861111111111111,
+      "share_price_held": 0.9248900615655233
+    },
+    "control": {
+      "n_windows": 1086167,
+      "n_series": 5748,
+      "pooled_lift_pct": -0.8860951535905826,
+      "median_ratio": 0.9702970297029703
+    },
+    "profiles": {
+      "5-10%": [
+        {
+          "week": -8,
+          "n_windows": 1794,
+          "units_per_day": 1.660216595,
+          "price_vs_before": 0.9907904504
+        },
+        {
+          "week": -7,
+          "n_windows": 1817,
+          "units_per_day": 1.5327462851,
+          "price_vs_before": 0.9931880013
+        },
+        {
+          "week": -6,
+          "n_windows": 1824,
+          "units_per_day": 1.5468358396,
+          "price_vs_before": 0.9955315688
+        },
+        {
+          "week": -5,
+          "n_windows": 1826,
+          "units_per_day": 1.6263495541,
+          "price_vs_before": 0.9980159308
+        },
+        {
+          "week": -4,
+          "n_windows": 1833,
+          "units_per_day": 1.6347907412,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -3,
+          "n_windows": 1833,
+          "units_per_day": 1.6541189307,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -2,
+          "n_windows": 1833,
+          "units_per_day": 1.5601278154,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -1,
+          "n_windows": 1833,
+          "units_per_day": 1.21105136,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 0,
+          "n_windows": 1833,
+          "units_per_day": 1.6056425844,
+          "price_vs_before": 0.9222957126
+        },
+        {
+          "week": 1,
+          "n_windows": 1833,
+          "units_per_day": 1.9297015042,
+          "price_vs_before": 0.924534707
+        },
+        {
+          "week": 2,
+          "n_windows": 1833,
+          "units_per_day": 1.8959456292,
+          "price_vs_before": 0.9258904262
+        },
+        {
+          "week": 3,
+          "n_windows": 1827,
+          "units_per_day": 1.8288274128,
+          "price_vs_before": 0.9262970643
+        },
+        {
+          "week": 4,
+          "n_windows": 1814,
+          "units_per_day": 1.8259483583,
+          "price_vs_before": 0.9270950543
+        },
+        {
+          "week": 5,
+          "n_windows": 1784,
+          "units_per_day": 1.9413795872,
+          "price_vs_before": 0.9274898505
+        },
+        {
+          "week": 6,
+          "n_windows": 1777,
+          "units_per_day": 1.9414053003,
+          "price_vs_before": 0.9282940834
+        },
+        {
+          "week": 7,
+          "n_windows": 1757,
+          "units_per_day": 1.90836328,
+          "price_vs_before": 0.9297965136
+        },
+        {
+          "week": 8,
+          "n_windows": 1746,
+          "units_per_day": 1.9493504358,
+          "price_vs_before": 0.9308407648
+        }
+      ],
+      "10-20%": [
+        {
+          "week": -8,
+          "n_windows": 2399,
+          "units_per_day": 2.5050318585,
+          "price_vs_before": 0.9946115841
+        },
+        {
+          "week": -7,
+          "n_windows": 2415,
+          "units_per_day": 2.4461993493,
+          "price_vs_before": 0.9962933908
+        },
+        {
+          "week": -6,
+          "n_windows": 2417,
+          "units_per_day": 2.3940540221,
+          "price_vs_before": 0.9970533769
+        },
+        {
+          "week": -5,
+          "n_windows": 2419,
+          "units_per_day": 2.3843382744,
+          "price_vs_before": 0.9991543894
+        },
+        {
+          "week": -4,
+          "n_windows": 2430,
+          "units_per_day": 2.3727807172,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -3,
+          "n_windows": 2430,
+          "units_per_day": 2.2586713698,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -2,
+          "n_windows": 2430,
+          "units_per_day": 2.198824221,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -1,
+          "n_windows": 2430,
+          "units_per_day": 1.5944738389,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 0,
+          "n_windows": 2430,
+          "units_per_day": 1.4686067019,
+          "price_vs_before": 0.8631872909
+        },
+        {
+          "week": 1,
+          "n_windows": 2430,
+          "units_per_day": 1.8701940035,
+          "price_vs_before": 0.8699374435
+        },
+        {
+          "week": 2,
+          "n_windows": 2430,
+          "units_per_day": 1.8531958763,
+          "price_vs_before": 0.8774414763
+        },
+        {
+          "week": 3,
+          "n_windows": 2423,
+          "units_per_day": 1.8704776543,
+          "price_vs_before": 0.8838227958
+        },
+        {
+          "week": 4,
+          "n_windows": 2414,
+          "units_per_day": 1.9542735296,
+          "price_vs_before": 0.8867479631
+        },
+        {
+          "week": 5,
+          "n_windows": 2411,
+          "units_per_day": 1.973217989,
+          "price_vs_before": 0.8916429351
+        },
+        {
+          "week": 6,
+          "n_windows": 2411,
+          "units_per_day": 2.1270793726,
+          "price_vs_before": 0.8961113104
+        },
+        {
+          "week": 7,
+          "n_windows": 2402,
+          "units_per_day": 2.2404214559,
+          "price_vs_before": 0.9005853442
+        },
+        {
+          "week": 8,
+          "n_windows": 2380,
+          "units_per_day": 2.3057756275,
+          "price_vs_before": 0.9055158263
+        }
+      ],
+      "20%+": [
+        {
+          "week": -8,
+          "n_windows": 1409,
+          "units_per_day": 3.9261887864,
+          "price_vs_before": 0.9728190848
+        },
+        {
+          "week": -7,
+          "n_windows": 1416,
+          "units_per_day": 3.8521993543,
+          "price_vs_before": 0.9763409686
+        },
+        {
+          "week": -6,
+          "n_windows": 1419,
+          "units_per_day": 3.5893486359,
+          "price_vs_before": 0.9879084901
+        },
+        {
+          "week": -5,
+          "n_windows": 1419,
+          "units_per_day": 3.6523708849,
+          "price_vs_before": 0.9966596878
+        },
+        {
+          "week": -4,
+          "n_windows": 1422,
+          "units_per_day": 3.6590315451,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -3,
+          "n_windows": 1422,
+          "units_per_day": 3.4655414909,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -2,
+          "n_windows": 1422,
+          "units_per_day": 3.4518786418,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -1,
+          "n_windows": 1422,
+          "units_per_day": 2.6394414306,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 0,
+          "n_windows": 1422,
+          "units_per_day": 2.1426562186,
+          "price_vs_before": 0.7167738268
+        },
+        {
+          "week": 1,
+          "n_windows": 1422,
+          "units_per_day": 3.0320474181,
+          "price_vs_before": 0.7743116621
+        },
+        {
+          "week": 2,
+          "n_windows": 1422,
+          "units_per_day": 3.2381719348,
+          "price_vs_before": 0.7926099616
+        },
+        {
+          "week": 3,
+          "n_windows": 1418,
+          "units_per_day": 3.6305578011,
+          "price_vs_before": 0.8152923484
+        },
+        {
+          "week": 4,
+          "n_windows": 1412,
+          "units_per_day": 4.1453121822,
+          "price_vs_before": 0.843603512
+        },
+        {
+          "week": 5,
+          "n_windows": 1402,
+          "units_per_day": 3.8643010533,
+          "price_vs_before": 0.8695855476
+        },
+        {
+          "week": 6,
+          "n_windows": 1395,
+          "units_per_day": 3.6649203903,
+          "price_vs_before": 0.8853621819
+        },
+        {
+          "week": 7,
+          "n_windows": 1389,
+          "units_per_day": 3.9267585207,
+          "price_vs_before": 0.8953108885
+        },
+        {
+          "week": 8,
+          "n_windows": 1375,
+          "units_per_day": 3.7391575663,
+          "price_vs_before": 0.9085410795
+        }
+      ],
+      "no change": [
+        {
+          "week": -8,
+          "n_windows": 1065249,
+          "units_per_day": 2.2713242229,
+          "price_vs_before": 0.9992267323
+        },
+        {
+          "week": -7,
+          "n_windows": 1070492,
+          "units_per_day": 2.2729357823,
+          "price_vs_before": 0.9994021451
+        },
+        {
+          "week": -6,
+          "n_windows": 1075774,
+          "units_per_day": 2.2751952149,
+          "price_vs_before": 0.9995720534
+        },
+        {
+          "week": -5,
+          "n_windows": 1081007,
+          "units_per_day": 2.2776242099,
+          "price_vs_before": 0.9997553751
+        },
+        {
+          "week": -4,
+          "n_windows": 1086167,
+          "units_per_day": 2.2844567837,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -3,
+          "n_windows": 1086167,
+          "units_per_day": 2.2868773534,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -2,
+          "n_windows": 1086167,
+          "units_per_day": 2.2784575747,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": -1,
+          "n_windows": 1086167,
+          "units_per_day": 2.2728597773,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 0,
+          "n_windows": 1086167,
+          "units_per_day": 2.2671111217,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 1,
+          "n_windows": 1086167,
+          "units_per_day": 2.2537969365,
+          "price_vs_before": 1.0
+        },
+        {
+          "week": 2,
+          "n_windows": 1086167,
+          "units_per_day": 2.2460098398,
+          "price_vs_before": 1.0000559907
+        },
+        {
+          "week": 3,
+          "n_windows": 1080723,
+          "units_per_day": 2.2477454424,
+          "price_vs_before": 1.0001703215
+        },
+        {
+          "week": 4,
+          "n_windows": 1075368,
+          "units_per_day": 2.2487497436,
+          "price_vs_before": 1.0002971002
+        },
+        {
+          "week": 5,
+          "n_windows": 1070225,
+          "units_per_day": 2.2498206217,
+          "price_vs_before": 1.0004363987
+        },
+        {
+          "week": 6,
+          "n_windows": 1065123,
+          "units_per_day": 2.2505140802,
+          "price_vs_before": 1.0005878478
+        },
+        {
+          "week": 7,
+          "n_windows": 1060003,
+          "units_per_day": 2.2521699746,
+          "price_vs_before": 1.0007661046
+        },
+        {
+          "week": 8,
+          "n_windows": 1054841,
+          "units_per_day": 2.2530651025,
+          "price_vs_before": 1.0009325084
+        }
+      ]
+    },
+    "price_change_vs_sales": [
+      {
+        "zero_sales_week": false,
+        "n_weeks": 974384,
+        "n_changes": 18982,
+        "change_rate": 0.01948102596101742
+      },
+      {
+        "zero_sales_week": true,
+        "n_weeks": 221569,
+        "n_changes": 9,
+        "change_rate": 4.061940072844125e-05
+      }
+    ]
+  }
+}

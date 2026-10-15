@@ -1,0 +1,7 @@
+# The final holdout: the last days of the sales file, touched once (F4) from committed, frozen code.
+# Every exploration, backtest and tuning step uses only the days before it.
+holdout_days: 28
+reason: >-
+  28 days is the M5 forecast horizon (PROJECT_PLAN section 4). With the 1,941 days of
+  sales_train_evaluation.csv this reserves d_1914..d_1941 (2016-04-25 to 2016-05-22), the
+  competition's public-leaderboard labels, and leaves d_1..d_1913 for everything else.

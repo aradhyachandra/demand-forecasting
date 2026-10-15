@@ -2,6 +2,7 @@
 (needs data/raw/ from Kaggle and a finished `python -m forecast.run_f1`)."""
 import json
 
+import pandas as pd
 import pyarrow.parquet as pq
 import pytest
 
@@ -38,3 +39,23 @@ def test_slice_matches_configured_scope():
     t = pq.read_table(path, columns=["state_id", "cat_id"])
     assert set(t.column("state_id").unique().to_pylist()) == {scope["state"]}
     assert set(t.column("cat_id").unique().to_pylist()) == {scope["category"]}
+
+
+def test_f2_reads_only_training_days():
+    from forecast import demand_patterns as dp
+    data = config.load("data")
+    path = ROOT / data["processed_dir"] / data["slice_parquet"]
+    con, last_train = dp.open_training_days(path, config.load("holdout")["holdout_days"], "1GB", 2)
+    assert last_train == 1913  # holdout d_1914..d_1941 is never read
+    assert con.execute("SELECT MAX(d_num), BOOL_AND(sell_price IS NOT NULL) FROM train_days").fetchone() == (1913, True)
+    con.close()
+
+
+def test_f2_results_are_consistent():
+    r = json.loads((ROOT / "results" / "f2_demand_patterns.json").read_text())
+    f1 = json.loads((ROOT / "results" / "f1_data_report.json").read_text())
+    assert r["training"]["last_d"] == f1["holdout_reserved"]["first_d"] - 1
+    assert sum(c["n_series"] for c in r["classes"]) == r["training"]["n_series"] == f1["slice_checks"]["n_series"]
+    assert sum(c["units"] for c in r["classes"]) == r["training"]["units"]
+    occ = pd.read_csv(ROOT / "results" / "f2_event_occurrences.csv")
+    assert occ["date"].max() < f1["holdout_reserved"]["first_date"]

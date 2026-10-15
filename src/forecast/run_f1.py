@@ -21,7 +21,6 @@ FINGERPRINTS = config.CONFIG_DIR / "raw_files.yaml"
 REPORT = ROOT / "results" / "f1_data_report.json"
 TEMPLATE = ROOT / "docs" / "templates" / "F1_data_and_sql.md"
 DOC = ROOT / "docs" / "F1_data_and_sql.md"
-HOLDOUT_DAYS = 28  # the M5 horizon; the plan's final holdout is the last 28 days (PROJECT_PLAN 4)
 
 
 def estimate_pandas_bytes_per_row(parquet: Path, sample_rows: int = 200_000) -> float:
@@ -38,6 +37,7 @@ def estimate_pandas_bytes_per_row(parquet: Path, sample_rows: int = 200_000) -> 
 def main(record: bool = False) -> dict:
     data_cfg = config.load("data")
     scope = config.load("scope")
+    holdout_days = config.load("holdout")["holdout_days"]
     paths = config.raw_paths(data_cfg)
 
     if record:
@@ -66,7 +66,7 @@ def main(record: bool = False) -> dict:
 
     holdout = con.execute(
         "SELECT MIN(d_num), MAX(d_num), MIN(date), MAX(date) FROM slice WHERE d_num > ?",
-        [total_days - HOLDOUT_DAYS],
+        [total_days - holdout_days],
     ).fetchone()
     per_store = con.execute(
         "SELECT store_id, COUNT(DISTINCT id) AS n_series, SUM(units) AS units "
@@ -94,7 +94,7 @@ def main(record: bool = False) -> dict:
         "slice_per_store": [{"store_id": s, "n_series": int(n), "units": int(u)} for s, n, u in per_store],
         "slice_per_dept": [{"dept_id": s, "n_series": int(n), "units": int(u)} for s, n, u in per_dept],
         "holdout_reserved": {
-            "days": HOLDOUT_DAYS,
+            "days": holdout_days,
             "first_d": int(holdout[0]), "last_d": int(holdout[1]),
             "first_date": holdout[2].isoformat(), "last_date": holdout[3].isoformat(),
         },
