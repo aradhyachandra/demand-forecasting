@@ -188,4 +188,55 @@ stock, result consistency and doc = rendered results). Totals: 140 unit, 15 real
 
 How to run: `.venv/bin/python -m forecast.run_f5` (after F4; about 15 s).
 
-Next: F6 (report, dashboard, README, clean-clone check). Not started.
+Next: F6 (report, dashboard, README, clean-clone check).
+
+
+## F6: Report, dashboard, README, clean-clone check (done 2026-10-15)
+
+Built:
+- `src/forecast/report.py` (template filling, as in the churn project) and `src/forecast/run_f6.py`:
+  render `docs/REPORT.md` (findings report, 5-bullet executive summary answering the Section 1
+  questions), `README.md` and one new figure `docs/figures/f6_summary.png` from `results/*.json` only.
+- `src/forecast/first_sale_week.py`: the first-priced-week vs first-sale-week count, saved to
+  `results/f6_first_sale_week.json` (3,440 of 3,456 later-starting series).
+- `app/streamlit_app.py` + `src/forecast/dashboard.py`: Product, Inventory scenarios (pre-computed F5
+  scenarios plus a live single-item replay with the F5 functions) and Portfolio views. Starts headless;
+  all views checked in the browser and with streamlit's AppTest.
+- `src/forecast/compare_runs.py` and `src/forecast/render_f6_check.py`: the clean-clone comparison and
+  its write-up `docs/F6_reproducibility.md`, rendered from `results/f6_clean_clone_check.json`.
+- `LICENSE` (MIT, code only; the M5 data is not covered). streamlit 1.66.0 and altair 6.3.0 pinned.
+- TO VERIFY items resolved where possible (M5 Competitors' Guide for prices; Christmas still open),
+  each marked in NOTES.md.
+
+Clean-clone check (`docs/F6_reproducibility.md`): fresh clone and venv (Python 3.13.5, pip check clean),
+raw sha256s match; F1-F6 rerun. results/: 16 of 16 match (15 byte-identical, f4_backtest.json differs
+only in run-time fields). Across results/, config/, docs/ and README.md, 57 of 58 match; the one other
+file is the run-time paragraph of docs/F4_model_backtest.md. The frozen 1a31ed9 holdout code, re-run in
+a separate clone, reproduced results/f4_holdout.json (run-time fields aside) and a byte-identical
+forecasts parquet. 176 unit and 18 real-data tests pass in the clone.
+
+Tests: 36 new unit tests (report rendering 7, compare tool 3, dashboard 13, run_f6 8, first-sale week
+2, write-up renderer 3), 3 new real-data checks (single-item replay = F5 run, app on real data, report
+and README = rendered). Totals: 176 unit, 18 real-data.
+
+All milestones (F1-F6) are done.
+
+### Reproduce end to end
+
+```bash
+# data: Kaggle M5 files in data/raw/ (sales_train_evaluation.csv, calendar.csv, sell_prices.csv)
+brew install libomp                      # macOS only, for LightGBM
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e .
+.venv/bin/python -m forecast.run_f1
+.venv/bin/python -m forecast.run_f2
+.venv/bin/python -m forecast.run_f3
+.venv/bin/python -m forecast.run_f4      # about 40 min
+# holdout forecasts: re-run the frozen code of 1a31ed9 in a separate clone (README step 4);
+# never run forecast.run_f4_holdout in the working copy (it refuses anyway)
+.venv/bin/python -m forecast.run_f5
+.venv/bin/python -m forecast.first_sale_week
+.venv/bin/python -m forecast.run_f6
+.venv/bin/python -m pytest && .venv/bin/python -m pytest -m realdata
+.venv/bin/streamlit run app/streamlit_app.py
+```

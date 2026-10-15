@@ -1,0 +1,8 @@
+{
+  "definition": "series whose first priced week (wm_yr_wk with a sell_price) is after the first week of the data; sold = units > 0 in that week",
+  "series": 5748,
+  "series_priced_from_first_week": 2292,
+  "series_starting_after_first_week": 3456,
+  "sell_in_first_priced_week": 3440,
+  "no_sale_in_first_priced_week": 16
+}
