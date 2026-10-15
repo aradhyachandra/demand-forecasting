@@ -79,11 +79,24 @@
   is written by the run. Re-training the chosen setting at d_1801 reproduced the saved forecasts
   exactly (max difference 0.0), so the run is deterministic.
 
+## Decisions in F4 (part B)
+
+- **The comparison baseline was fixed before the holdout run** (TSB, the best in the backtest). On
+  the holdout SBA scores slightly better than TSB. The write-up reports both, but TSB stays the
+  reference, so the baseline is not picked after seeing the holdout.
+- **The holdout write-up is rendered from saved results only** (`render_f4_holdout`). It loads no
+  data and trains nothing; a test checks that it does not touch `model.load_data` / `model.fit`
+  and leaves `results/f4_holdout.json` unchanged.
+- **The part A real-data check no longer asserts that the holdout result is missing.** A new check
+  ties `results/f4_holdout.json` to commit 1a31ed9 and the frozen `model_final.yaml`.
+
 ## TO VERIFY
 
 - **Holdout dates:** the final holdout is d_1914 to d_1941 (2016-04-25 to 2016-05-22), the last 28 days
   of `sales_train_evaluation.csv`. These were the competition's public-leaderboard labels. Confirm
   nobody tunes on them before the one F4 run.
+  *Done 2026-10-15: scored once by `run_f4_holdout` from commit 1a31ed9 (result committed in c38584c);
+  nothing was tuned on it.*
 - **Python on the Mac:** dependencies were tested on Python 3.10 on the remote machine; the pinned
   versions publish wheels for Python 3.13 (your Mac). Confirm `pip install -r requirements.txt` works there.
 - **How M5 weekly prices are built:** in full weeks with no sales the price changed in 9 of 221,569

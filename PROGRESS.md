@@ -128,3 +128,23 @@ guards on throwaway git repos), 3 new real-data checks. Totals: 102 unit, 11 rea
 How to run: `.venv/bin/python -m forecast.run_f4` (after run_f1; about 40 min).
 
 Next: review, then F4 part B (`python -m forecast.run_f4_holdout`, once, from the committed tree).
+
+
+## F4 part B: one-shot holdout (done 2026-10-15)
+
+- `python -m forecast.run_f4_holdout` ran once from the clean commit 1a31ed9 (about 1 min). It wrote
+  `results/f4_holdout.json` (committed in c38584c) and, for F5,
+  `data/processed/f4_holdout_forecasts.parquet` (gitignored).
+- `src/forecast/render_f4_holdout.py` + `docs/templates/F4_holdout.md` render
+  `docs/F4_holdout.md` and `docs/figures/f4_holdout_vs_backtest.png` from the saved results only.
+- Result (numbers in `docs/F4_holdout.md`): the frozen model ranks first of 8 methods on the
+  holdout. It beats TSB (the reference fixed on the backtest) overall, in every class and in every
+  department, by about the same margin as in the backtest. SBA was the best baseline on the holdout.
+  The model under-forecasts the slice total in every holdout week.
+- Tests: 3 new unit tests (the write-up uses only saved results), 1 new real-data check. Totals:
+  105 unit, 12 real-data, all pass.
+
+How to re-render: `.venv/bin/python -m forecast.render_f4_holdout`. The holdout itself is never re-run.
+
+Next: F5 (inventory policy and simulation), sizing safety stock from the backtest residuals and
+replaying the holdout.
