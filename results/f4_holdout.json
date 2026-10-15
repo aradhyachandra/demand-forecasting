@@ -1,0 +1,1741 @@
+{
+  "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
+  "started_utc": "2026-10-15T12:18:52+00:00",
+  "model_final": {
+    "chosen_setting": "s1_small",
+    "chosen_reason": "lowest WRMSSE averaged over the backtest origins d_1801, d_1829, d_1857, d_1885 (0.8306); the whole grid is in results/f4_grid.csv",
+    "params": {
+      "num_leaves": 31,
+      "learning_rate": 0.05,
+      "min_data_in_leaf": 100
+    },
+    "rounds": 200,
+    "model_yaml_sha256": "4ab25ff70a7b2d429d6b656f96452645d1effc4152c4172a65cd4ad49c5da20f",
+    "final_run": {
+      "forecast_origin": 1913,
+      "forecast_days": [
+        1914,
+        1941
+      ],
+      "training_origins": [
+        1535,
+        1885
+      ],
+      "training_reason": "the same recipe as in the backtest (one year of origins before the forecast origin), moved to the last training day so the model sees the most recent year",
+      "baselines": "F3 baselines from config/backtest.yaml, same origin, scored with the same metrics and weights"
+    }
+  },
+  "setup": {
+    "forecast_origin": 1913,
+    "holdout_days": [
+      1914,
+      1941
+    ],
+    "training_rows": 4087167,
+    "methods": [
+      "naive",
+      "seasonal_naive",
+      "moving_average",
+      "ses",
+      "croston",
+      "sba",
+      "tsb",
+      "lgbm"
+    ],
+    "best_baseline_from_backtest": "tsb"
+  },
+  "coverage": [
+    {
+      "origin": 1913,
+      "first_scored_d": 1914,
+      "last_scored_d": 1941,
+      "n_series": 5748,
+      "n_scored": 5748,
+      "n_short_history": 0,
+      "n_no_window_days": 0,
+      "n_zero_scale": 0,
+      "zero_scale_weight_share": 0.0,
+      "scored_days": 160944,
+      "classes": {
+        "smooth": 531,
+        "erratic": 274,
+        "intermittent": 3360,
+        "lumpy": 1583,
+        "too_few_sales": 0
+      }
+    }
+  ],
+  "overall": {
+    "naive": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 1.0599597091287078,
+      "median_rmsse": 0.9248356179735991,
+      "wrmsse": 1.1727234669209716,
+      "mean_mae": 1.9421102992345163,
+      "mean_rmse": 2.4339649662156897,
+      "mean_bias": 0.46604408986976836,
+      "weekly_wape": 0.7575987819567029
+    },
+    "seasonal_naive": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 1.0184874687039793,
+      "median_rmsse": 0.9589493563822085,
+      "wrmsse": 1.0551232060485696,
+      "mean_mae": 1.6889912019087385,
+      "mean_rmse": 2.30331077398246,
+      "mean_bias": -0.11435654637637938,
+      "weekly_wape": 0.3833214061685529
+    },
+    "moving_average": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.793836277826172,
+      "median_rmsse": 0.7372723217847978,
+      "wrmsse": 0.8462216103772793,
+      "mean_mae": 1.438758201610498,
+      "mean_rmse": 1.8499871420008849,
+      "mean_bias": -0.08553906949000895,
+      "weekly_wape": 0.3571479056782139
+    },
+    "ses": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.7932356306517975,
+      "median_rmsse": 0.7394451231818252,
+      "wrmsse": 0.8402367047923922,
+      "mean_mae": 1.429854176029046,
+      "mean_rmse": 1.8386023841308972,
+      "mean_bias": -0.04805457020146944,
+      "weekly_wape": 0.3517177061337437
+    },
+    "croston": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.7976608849788147,
+      "median_rmsse": 0.7379773820527193,
+      "wrmsse": 0.8396738368049341,
+      "mean_mae": 1.4822169586204343,
+      "mean_rmse": 1.8803731997534305,
+      "mean_bias": 0.017753412999621864,
+      "weekly_wape": 0.3694438569933351
+    },
+    "sba": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.7953647497278684,
+      "median_rmsse": 0.7361559517519296,
+      "wrmsse": 0.8333733558620369,
+      "mean_mae": 1.4611324428834183,
+      "mean_rmse": 1.871807552902911,
+      "mean_bias": -0.08862467667809568,
+      "weekly_wape": 0.3644319496925128
+    },
+    "tsb": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.7913618729974966,
+      "median_rmsse": 0.7369903779789063,
+      "wrmsse": 0.8389682284036399,
+      "mean_mae": 1.4293073565459689,
+      "mean_rmse": 1.8364642117851138,
+      "mean_bias": -0.05011726674952681,
+      "weekly_wape": 0.3491460003474439
+    },
+    "lgbm": {
+      "n": 5748,
+      "n_scaled": 5748,
+      "mean_rmsse": 0.7705581615335817,
+      "median_rmsse": 0.7131037698667775,
+      "wrmsse": 0.7984124873297817,
+      "mean_mae": 1.3728380141856216,
+      "mean_rmse": 1.7709904981301443,
+      "mean_bias": -0.10351613960791967,
+      "weekly_wape": 0.33454004636520596
+    }
+  },
+  "by_class": {
+    "smooth": {
+      "naive": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 1.0219883524030013,
+        "median_rmsse": 0.9095081628720935,
+        "wrmsse": 1.1171113858889568,
+        "mean_mae": 4.243408662900189,
+        "mean_rmse": 4.952087223821103,
+        "mean_bias": 1.9441081517352705,
+        "weekly_wape": 0.5185895679181511
+      },
+      "seasonal_naive": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.907353802830574,
+        "median_rmsse": 0.8616873263620547,
+        "wrmsse": 0.915247844009149,
+        "mean_mae": 3.3849206349206353,
+        "mean_rmse": 4.2885547781046505,
+        "mean_bias": 0.0371939736346516,
+        "weekly_wape": 0.24023831998619613
+      },
+      "moving_average": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.7432000056712753,
+        "median_rmsse": 0.6947111296877783,
+        "wrmsse": 0.7904655301943393,
+        "mean_mae": 2.9742303701141473,
+        "mean_rmse": 3.664112996678795,
+        "mean_bias": 0.2339924670433145,
+        "weekly_wape": 0.23848238482384823
+      },
+      "ses": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.7344836251235075,
+        "median_rmsse": 0.7065049857026447,
+        "wrmsse": 0.7776842999081809,
+        "mean_mae": 2.92264887782833,
+        "mean_rmse": 3.6063525355809536,
+        "mean_bias": 0.3096339923526119,
+        "weekly_wape": 0.2276941303633621
+      },
+      "croston": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.7435769019902567,
+        "median_rmsse": 0.707287671515155,
+        "wrmsse": 0.7781766906083356,
+        "mean_mae": 3.0522290651257395,
+        "mean_rmse": 3.733588310367712,
+        "mean_bias": 0.45068104612952853,
+        "weekly_wape": 0.24644481379555674
+      },
+      "sba": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.7380058196082344,
+        "median_rmsse": 0.6962355980778202,
+        "wrmsse": 0.7650362667978464,
+        "mean_mae": 2.984845376449114,
+        "mean_rmse": 3.6939919488066106,
+        "mean_bias": 0.09682132796348758,
+        "weekly_wape": 0.23970634260582557
+      },
+      "tsb": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.734382237079327,
+        "median_rmsse": 0.7059367694305125,
+        "wrmsse": 0.7770988293457259,
+        "mean_mae": 2.9240705137262184,
+        "mean_rmse": 3.606925549751743,
+        "mean_bias": 0.30481850725970033,
+        "weekly_wape": 0.22746294175307255
+      },
+      "lgbm": {
+        "n": 531,
+        "n_scaled": 531,
+        "mean_rmsse": 0.6934637582019811,
+        "median_rmsse": 0.6676079267701552,
+        "wrmsse": 0.7153808081747952,
+        "mean_mae": 2.673190196999622,
+        "mean_rmse": 3.346531634878043,
+        "mean_bias": 0.07351023927690988,
+        "weekly_wape": 0.2167798639786116
+      }
+    },
+    "erratic": {
+      "naive": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.9129973559595346,
+        "median_rmsse": 0.7723264846650982,
+        "wrmsse": 1.0621339369941751,
+        "mean_mae": 4.168795620437956,
+        "mean_rmse": 5.047449924130722,
+        "mean_bias": 0.46754431699687177,
+        "weekly_wape": 0.624706195933994
+      },
+      "seasonal_naive": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.8637163787427307,
+        "median_rmsse": 0.7999902736172321,
+        "wrmsse": 0.9399698347616108,
+        "mean_mae": 3.748305526590198,
+        "mean_rmse": 4.881952823518801,
+        "mean_bias": -0.7055526590198123,
+        "weekly_wape": 0.37711114880418717
+      },
+      "moving_average": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.7241968702826178,
+        "median_rmsse": 0.6271552127223973,
+        "wrmsse": 0.8123691826785753,
+        "mean_mae": 3.3991043497691047,
+        "mean_rmse": 4.231452176917255,
+        "mean_bias": -0.5954118873826904,
+        "weekly_wape": 0.4072790714579951
+      },
+      "ses": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.7108328188711228,
+        "median_rmsse": 0.6373234967168564,
+        "wrmsse": 0.7854292099602395,
+        "mean_mae": 3.2716864052395507,
+        "mean_rmse": 4.102668443755236,
+        "mean_bias": -0.5048377254681748,
+        "weekly_wape": 0.3774881781091577
+      },
+      "croston": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.7295282634328386,
+        "median_rmsse": 0.6420838920527525,
+        "wrmsse": 0.7935320086414803,
+        "mean_mae": 3.5426324983657627,
+        "mean_rmse": 4.360084818808814,
+        "mean_bias": -0.1599403596634825,
+        "weekly_wape": 0.42464047724005727
+      },
+      "sba": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.7258734041310408,
+        "median_rmsse": 0.6322515198330387,
+        "wrmsse": 0.7887068179755911,
+        "mean_mae": 3.494427368599,
+        "mean_rmse": 4.338668174607531,
+        "mean_bias": -0.42090189225382285,
+        "weekly_wape": 0.41921398943870103
+      },
+      "tsb": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.712918281891139,
+        "median_rmsse": 0.6373355265103726,
+        "wrmsse": 0.7874130903740736,
+        "mean_mae": 3.298635190044562,
+        "mean_rmse": 4.126218483898536,
+        "mean_bias": -0.5136221319950502,
+        "weekly_wape": 0.3824526273052048
+      },
+      "lgbm": {
+        "n": 274,
+        "n_scaled": 274,
+        "mean_rmsse": 0.6924828988277864,
+        "median_rmsse": 0.6041063188222895,
+        "wrmsse": 0.7585107546403369,
+        "mean_mae": 3.1867613711222496,
+        "mean_rmse": 4.0127801185556,
+        "mean_bias": -0.4629072826085568,
+        "weekly_wape": 0.37807993851919774
+      }
+    },
+    "intermittent": {
+      "naive": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 1.1083470543512828,
+        "median_rmsse": 0.9646944725917944,
+        "wrmsse": 1.2378864097079996,
+        "mean_mae": 1.3580569727891159,
+        "mean_rmse": 1.738342746595488,
+        "mean_bias": 0.2917304421768708,
+        "weekly_wape": 0.9352497955348287
+      },
+      "seasonal_naive": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 1.071435531799494,
+        "median_rmsse": 1.0141955968551133,
+        "wrmsse": 1.1481196890834,
+        "mean_mae": 1.1895195578231295,
+        "mean_rmse": 1.6568082563121038,
+        "mean_bias": -0.059885204081632656,
+        "weekly_wape": 0.45678389336488767
+      },
+      "moving_average": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.825103570847855,
+        "median_rmsse": 0.7711471860923276,
+        "wrmsse": 0.8881147376825064,
+        "mean_mae": 1.0034636175898932,
+        "mean_rmse": 1.2928510423861548,
+        "mean_bias": -0.06082057823129253,
+        "weekly_wape": 0.4052282179337707
+      },
+      "ses": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.8265519624142966,
+        "median_rmsse": 0.7753442920234803,
+        "wrmsse": 0.8886405486247609,
+        "mean_mae": 1.0056609630437896,
+        "mean_rmse": 1.294166510019649,
+        "mean_bias": -0.03507852990701018,
+        "weekly_wape": 0.4087527034245244
+      },
+      "croston": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.8279998887636685,
+        "median_rmsse": 0.7683248739814358,
+        "wrmsse": 0.8865598385986717,
+        "mean_mae": 1.0308006672342576,
+        "mean_rmse": 1.307098804886934,
+        "mean_bias": 0.005277404013348843,
+        "weekly_wape": 0.41630104636621057
+      },
+      "sba": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.8259770514820275,
+        "median_rmsse": 0.7672965563842439,
+        "wrmsse": 0.8830249448443631,
+        "mean_mae": 1.0183313158485408,
+        "mean_rmse": 1.3027647376112381,
+        "mean_bias": -0.05606958693561797,
+        "weekly_wape": 0.41144891557064234
+      },
+      "tsb": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.8241717435744863,
+        "median_rmsse": 0.7707486644014061,
+        "wrmsse": 0.886555992362755,
+        "mean_mae": 1.0035713958089354,
+        "mean_rmse": 1.2907233267395406,
+        "mean_bias": -0.03742015418115349,
+        "weekly_wape": 0.4033623871405068
+      },
+      "lgbm": {
+        "n": 3360,
+        "n_scaled": 3360,
+        "mean_rmsse": 0.8041079529999609,
+        "median_rmsse": 0.7463891235000883,
+        "wrmsse": 0.8523841690960465,
+        "mean_mae": 0.973653430369626,
+        "mean_rmse": 1.2483868229689197,
+        "mean_bias": -0.0666877622036919,
+        "weekly_wape": 0.3805947141318131
+      }
+    },
+    "lumpy": {
+      "naive": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.9954296998058092,
+        "median_rmsse": 0.8485592633257948,
+        "wrmsse": 1.1554631297097007,
+        "mean_mae": 2.024433715368649,
+        "mean_rmse": 2.6134171839457494,
+        "mean_bias": 0.33997382907679813,
+        "weekly_wape": 0.8591383273413096
+      },
+      "seasonal_naive": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.9701701997382374,
+        "median_rmsse": 0.8888199799994568,
+        "wrmsse": 1.098554079092857,
+        "mean_mae": 1.8238200523418462,
+        "mean_rmse": 2.5632829607231784,
+        "mean_bias": -0.17848118400866347,
+        "weekly_wape": 0.45298520657747393
+      },
+      "moving_average": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7565090217480476,
+        "median_rmsse": 0.6872360875194643,
+        "wrmsse": 0.849406215797758,
+        "mean_mae": 1.5083218378949812,
+        "mean_rmse": 2.0118033430775983,
+        "mean_bias": -0.15693529464849743,
+        "weekly_wape": 0.4054340779159545
+      },
+      "ses": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7564907226552273,
+        "median_rmsse": 0.6884343210944959,
+        "wrmsse": 0.8469207182583237,
+        "mean_mae": 1.5106837263583979,
+        "mean_rmse": 2.0093383956638995,
+        "mean_bias": -0.11651542778992365,
+        "weekly_wape": 0.4059452392162372
+      },
+      "croston": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7631996598072507,
+        "median_rmsse": 0.687502415520088,
+        "wrmsse": 0.8449269421321581,
+        "mean_mae": 1.5570927972894275,
+        "mean_rmse": 2.0463263010762796,
+        "mean_bias": -0.07022958718257173,
+        "weekly_wape": 0.4219556882968147
+      },
+      "sba": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7616571607784574,
+        "median_rmsse": 0.6838253189211434,
+        "wrmsse": 0.8418638244811891,
+        "mean_mae": 1.5379469782389041,
+        "mean_rmse": 2.041412186388755,
+        "mean_bias": -0.16241682635065194,
+        "weekly_wape": 0.4189341366728782
+      },
+      "tsb": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7544121354719145,
+        "median_rmsse": 0.6870405899723788,
+        "wrmsse": 0.8452235888201074,
+        "mean_mae": 1.5079919839844442,
+        "mean_rmse": 2.004614390391411,
+        "mean_bias": -0.11589923841810576,
+        "weekly_wape": 0.40080796291359605
+      },
+      "lgbm": {
+        "n": 1583,
+        "n_scaled": 1583,
+        "mean_rmsse": 0.7387214280044808,
+        "median_rmsse": 0.669101438273588,
+        "wrmsse": 0.8166012544798869,
+        "mean_mae": 1.4699689003175707,
+        "mean_rmse": 1.96371674508656,
+        "mean_bias": -0.1788611693513658,
+        "weekly_wape": 0.38772554120677033
+      }
+    }
+  },
+  "by_dept": {
+    "FOODS_1": {
+      "naive": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 1.0519723899988473,
+        "median_rmsse": 0.9171689872966391,
+        "wrmsse": 1.0656944560502408,
+        "mean_mae": 1.8529679232804233,
+        "mean_rmse": 2.43465321287894,
+        "mean_bias": -0.08420138888888887,
+        "weekly_wape": 0.8153804990077816
+      },
+      "seasonal_naive": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 1.0643745439861332,
+        "median_rmsse": 0.9956974890096979,
+        "wrmsse": 1.1156581295375585,
+        "mean_mae": 1.7861689814814814,
+        "mean_rmse": 2.482817085260856,
+        "mean_bias": -0.30576223544973546,
+        "weekly_wape": 0.5158866418426274
+      },
+      "moving_average": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.8326733825275883,
+        "median_rmsse": 0.7675813148332943,
+        "wrmsse": 0.8315481714460933,
+        "mean_mae": 1.4860195814436887,
+        "mean_rmse": 1.9760343019182587,
+        "mean_bias": -0.3392030423280423,
+        "weekly_wape": 0.45012151887444535
+      },
+      "ses": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.8354648801001017,
+        "median_rmsse": 0.7685307809185484,
+        "wrmsse": 0.8346408014908989,
+        "mean_mae": 1.4978984072354298,
+        "mean_rmse": 1.9793395399279827,
+        "mean_bias": -0.26088338394828653,
+        "weekly_wape": 0.4567471452279519
+      },
+      "croston": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.8212103604361447,
+        "median_rmsse": 0.762667516128582,
+        "wrmsse": 0.8333947649598936,
+        "mean_mae": 1.4654645935707715,
+        "mean_rmse": 1.931903907733074,
+        "mean_bias": -0.17310720457195974,
+        "weekly_wape": 0.4188110993701672
+      },
+      "sba": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.8209557457739983,
+        "median_rmsse": 0.762489962002255,
+        "wrmsse": 0.8323025926555357,
+        "mean_mae": 1.451834198375948,
+        "mean_rmse": 1.9315070000768555,
+        "mean_bias": -0.2571457100841026,
+        "weekly_wape": 0.41807531711559165
+      },
+      "tsb": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.832451498692049,
+        "median_rmsse": 0.7661931371594268,
+        "wrmsse": 0.8318539849782869,
+        "mean_mae": 1.4928874251118784,
+        "mean_rmse": 1.973013923247621,
+        "mean_bias": -0.25776788076899304,
+        "weekly_wape": 0.4492687292112627
+      },
+      "lgbm": {
+        "n": 864,
+        "n_scaled": 864,
+        "mean_rmsse": 0.8158054784157684,
+        "median_rmsse": 0.7437011631220165,
+        "wrmsse": 0.8139972932223458,
+        "mean_mae": 1.4520336588722966,
+        "mean_rmse": 1.9240352297379746,
+        "mean_bias": -0.290111380909754,
+        "weekly_wape": 0.42893465010004045
+      }
+    },
+    "FOODS_2": {
+      "naive": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 1.104334455538218,
+        "median_rmsse": 0.9571630208429773,
+        "wrmsse": 1.1867189011032069,
+        "mean_mae": 1.535063711414214,
+        "mean_rmse": 1.939924881099554,
+        "mean_bias": 0.4160759152907394,
+        "weekly_wape": 0.9523175761160677
+      },
+      "seasonal_naive": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 1.0394523568242897,
+        "median_rmsse": 0.9839363705471833,
+        "wrmsse": 1.0760973313349813,
+        "mean_mae": 1.284300969131371,
+        "mean_rmse": 1.7925393859393992,
+        "mean_bias": -0.10644741564967695,
+        "weekly_wape": 0.4271208162862917
+      },
+      "moving_average": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.8041031845645968,
+        "median_rmsse": 0.7622828287251499,
+        "wrmsse": 0.8308504319857035,
+        "mean_mae": 1.0823489257512051,
+        "mean_rmse": 1.398367710381774,
+        "mean_bias": -0.04491206030150754,
+        "weekly_wape": 0.37552784213207147
+      },
+      "ses": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.8056615896892607,
+        "median_rmsse": 0.7658521527954651,
+        "wrmsse": 0.8262565173616929,
+        "mean_mae": 1.0818226487070064,
+        "mean_rmse": 1.4004229833295316,
+        "mean_bias": -0.05469561657733524,
+        "weekly_wape": 0.3812238996690323
+      },
+      "croston": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.7998470116061717,
+        "median_rmsse": 0.7569228511628038,
+        "wrmsse": 0.825793990782344,
+        "mean_mae": 1.0886484964753957,
+        "mean_rmse": 1.389749767698227,
+        "mean_bias": -0.02244038205052269,
+        "weekly_wape": 0.36762655014975665
+      },
+      "sba": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.7983244929597711,
+        "median_rmsse": 0.754985354646369,
+        "wrmsse": 0.8215956826674605,
+        "mean_mae": 1.076713490612671,
+        "mean_rmse": 1.3872633192563448,
+        "mean_bias": -0.08958491894225362,
+        "weekly_wape": 0.3654588544478745
+      },
+      "tsb": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.8035529605057529,
+        "median_rmsse": 0.7620796060599411,
+        "wrmsse": 0.824709871189354,
+        "mean_mae": 1.080449278208708,
+        "mean_rmse": 1.3967885840035532,
+        "mean_bias": -0.053288554514896,
+        "weekly_wape": 0.3762971657068986
+      },
+      "lgbm": {
+        "n": 1592,
+        "n_scaled": 1592,
+        "mean_rmsse": 0.7806739582706406,
+        "median_rmsse": 0.7389789500098113,
+        "wrmsse": 0.800336491712407,
+        "mean_mae": 1.0529782816259425,
+        "mean_rmse": 1.3513643963412953,
+        "mean_bias": -0.050998801169102576,
+        "weekly_wape": 0.35249146742583315
+      }
+    },
+    "FOODS_3": {
+      "naive": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 1.0405965400656032,
+        "median_rmsse": 0.9095191939775908,
+        "wrmsse": 1.186112599644592,
+        "mean_mae": 2.1623524561708036,
+        "mean_rmse": 2.672700437171898,
+        "mean_bias": 0.6346228953306718,
+        "weekly_wape": 0.6958405138314567
+      },
+      "seasonal_naive": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.9963056537187679,
+        "median_rmsse": 0.9349608684341573,
+        "wrmsse": 1.0368816673568644,
+        "mean_mae": 1.8591932824162474,
+        "mean_rmse": 2.5032058519958316,
+        "mean_bias": -0.06794610310709946,
+        "weekly_wape": 0.34649841138160625
+      },
+      "moving_average": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.7786782662861975,
+        "median_rmsse": 0.7159530167708434,
+        "wrmsse": 0.854442223864007,
+        "mean_mae": 1.598712556103851,
+        "mean_rmse": 2.0353071264993705,
+        "mean_bias": -0.03861091824336054,
+        "weekly_wape": 0.3345335277591287
+      },
+      "ses": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.7761432253325459,
+        "median_rmsse": 0.720419146846367,
+        "wrmsse": 0.8463697070988326,
+        "mean_mae": 1.5803025283177374,
+        "mean_rmse": 2.013567360882747,
+        "mean_bias": 0.011014883294164916,
+        "weekly_wape": 0.3238955383487552
+      },
+      "croston": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.7904230173038801,
+        "median_rmsse": 0.7200114842593329,
+        "wrmsse": 0.8458882370090606,
+        "mean_mae": 1.676942060424143,
+        "mean_rmse": 2.1041125594549714,
+        "mean_bias": 0.08728321108640093,
+        "weekly_wape": 0.3604489485193431
+      },
+      "sba": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.7872169575623019,
+        "median_rmsse": 0.7131563238489962,
+        "wrmsse": 0.8379083886561338,
+        "mean_mae": 1.649476505844987,
+        "mean_rmse": 2.0904631111067524,
+        "mean_bias": -0.04393121417890691,
+        "weekly_wape": 0.35387672505856327
+      },
+      "tsb": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.7746821500590891,
+        "median_rmsse": 0.7170771916211268,
+        "wrmsse": 0.8454672173767436,
+        "mean_mae": 1.5813270653770668,
+        "mean_rmse": 2.0132517721510435,
+        "mean_bias": 0.0059151818031118976,
+        "weekly_wape": 0.32287777253676453
+      },
+      "lgbm": {
+        "n": 3292,
+        "n_scaled": 3292,
+        "mean_rmsse": 0.753790837660068,
+        "median_rmsse": 0.6908169597794979,
+        "wrmsse": 0.7949997595931216,
+        "mean_mae": 1.5067358444485994,
+        "mean_rmse": 1.9337529847457826,
+        "mean_bias": -0.07994059717469122,
+        "weekly_wape": 0.3117646679401642
+      }
+    }
+  },
+  "by_origin": {
+    "1913": {
+      "naive": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 1.0599597091287078,
+        "median_rmsse": 0.9248356179735991,
+        "wrmsse": 1.1727234669209716,
+        "mean_mae": 1.9421102992345163,
+        "mean_rmse": 2.4339649662156897,
+        "mean_bias": 0.46604408986976836,
+        "weekly_wape": 0.7575987819567029
+      },
+      "seasonal_naive": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 1.0184874687039793,
+        "median_rmsse": 0.9589493563822085,
+        "wrmsse": 1.0551232060485696,
+        "mean_mae": 1.6889912019087385,
+        "mean_rmse": 2.30331077398246,
+        "mean_bias": -0.11435654637637938,
+        "weekly_wape": 0.3833214061685529
+      },
+      "moving_average": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.793836277826172,
+        "median_rmsse": 0.7372723217847978,
+        "wrmsse": 0.8462216103772793,
+        "mean_mae": 1.438758201610498,
+        "mean_rmse": 1.8499871420008849,
+        "mean_bias": -0.08553906949000895,
+        "weekly_wape": 0.3571479056782139
+      },
+      "ses": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.7932356306517975,
+        "median_rmsse": 0.7394451231818252,
+        "wrmsse": 0.8402367047923922,
+        "mean_mae": 1.429854176029046,
+        "mean_rmse": 1.8386023841308972,
+        "mean_bias": -0.04805457020146944,
+        "weekly_wape": 0.3517177061337437
+      },
+      "croston": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.7976608849788147,
+        "median_rmsse": 0.7379773820527193,
+        "wrmsse": 0.8396738368049341,
+        "mean_mae": 1.4822169586204343,
+        "mean_rmse": 1.8803731997534305,
+        "mean_bias": 0.017753412999621864,
+        "weekly_wape": 0.3694438569933351
+      },
+      "sba": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.7953647497278684,
+        "median_rmsse": 0.7361559517519296,
+        "wrmsse": 0.8333733558620369,
+        "mean_mae": 1.4611324428834183,
+        "mean_rmse": 1.871807552902911,
+        "mean_bias": -0.08862467667809568,
+        "weekly_wape": 0.3644319496925128
+      },
+      "tsb": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.7913618729974966,
+        "median_rmsse": 0.7369903779789063,
+        "wrmsse": 0.8389682284036399,
+        "mean_mae": 1.4293073565459689,
+        "mean_rmse": 1.8364642117851138,
+        "mean_bias": -0.05011726674952681,
+        "weekly_wape": 0.3491460003474439
+      },
+      "lgbm": {
+        "n": 5748,
+        "n_scaled": 5748,
+        "mean_rmsse": 0.7705581615335817,
+        "median_rmsse": 0.7131037698667775,
+        "wrmsse": 0.7984124873297817,
+        "mean_mae": 1.3728380141856216,
+        "mean_rmse": 1.7709904981301443,
+        "mean_bias": -0.10351613960791967,
+        "weekly_wape": 0.33454004636520596
+      }
+    }
+  },
+  "wins_vs_reference": {
+    "reference": "seasonal_naive",
+    "overall": {
+      "naive": {
+        "pairs": {
+          "n": 5748,
+          "wins": 2804,
+          "ties": 691,
+          "losses": 2253,
+          "share_wins": 0.48782185107863607
+        },
+        "series": {
+          "n": 5748,
+          "wins": 2804,
+          "ties": 691,
+          "losses": 2253,
+          "share_wins": 0.48782185107863607
+        }
+      },
+      "moving_average": {
+        "pairs": {
+          "n": 5748,
+          "wins": 4983,
+          "ties": 257,
+          "losses": 508,
+          "share_wins": 0.8669102296450939
+        },
+        "series": {
+          "n": 5748,
+          "wins": 4983,
+          "ties": 257,
+          "losses": 508,
+          "share_wins": 0.8669102296450939
+        }
+      },
+      "ses": {
+        "pairs": {
+          "n": 5748,
+          "wins": 5265,
+          "ties": 25,
+          "losses": 458,
+          "share_wins": 0.9159707724425887
+        },
+        "series": {
+          "n": 5748,
+          "wins": 5265,
+          "ties": 25,
+          "losses": 458,
+          "share_wins": 0.9159707724425887
+        }
+      },
+      "croston": {
+        "pairs": {
+          "n": 5748,
+          "wins": 5174,
+          "ties": 0,
+          "losses": 574,
+          "share_wins": 0.9001391788448155
+        },
+        "series": {
+          "n": 5748,
+          "wins": 5174,
+          "ties": 0,
+          "losses": 574,
+          "share_wins": 0.9001391788448155
+        }
+      },
+      "sba": {
+        "pairs": {
+          "n": 5748,
+          "wins": 5173,
+          "ties": 0,
+          "losses": 575,
+          "share_wins": 0.8999652052887961
+        },
+        "series": {
+          "n": 5748,
+          "wins": 5173,
+          "ties": 0,
+          "losses": 575,
+          "share_wins": 0.8999652052887961
+        }
+      },
+      "tsb": {
+        "pairs": {
+          "n": 5748,
+          "wins": 5286,
+          "ties": 24,
+          "losses": 438,
+          "share_wins": 0.9196242171189979
+        },
+        "series": {
+          "n": 5748,
+          "wins": 5286,
+          "ties": 24,
+          "losses": 438,
+          "share_wins": 0.9196242171189979
+        }
+      },
+      "lgbm": {
+        "pairs": {
+          "n": 5748,
+          "wins": 5354,
+          "ties": 0,
+          "losses": 394,
+          "share_wins": 0.9314544189283229
+        },
+        "series": {
+          "n": 5748,
+          "wins": 5354,
+          "ties": 0,
+          "losses": 394,
+          "share_wins": 0.9314544189283229
+        }
+      }
+    },
+    "by_class": {
+      "erratic": {
+        "naive": {
+          "pairs": {
+            "n": 274,
+            "wins": 140,
+            "ties": 30,
+            "losses": 104,
+            "share_wins": 0.5109489051094891
+          },
+          "series": {
+            "n": 274,
+            "wins": 140,
+            "ties": 30,
+            "losses": 104,
+            "share_wins": 0.5109489051094891
+          }
+        },
+        "moving_average": {
+          "pairs": {
+            "n": 274,
+            "wins": 203,
+            "ties": 8,
+            "losses": 63,
+            "share_wins": 0.7408759124087592
+          },
+          "series": {
+            "n": 274,
+            "wins": 203,
+            "ties": 8,
+            "losses": 63,
+            "share_wins": 0.7408759124087592
+          }
+        },
+        "ses": {
+          "pairs": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          },
+          "series": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          }
+        },
+        "croston": {
+          "pairs": {
+            "n": 274,
+            "wins": 220,
+            "ties": 0,
+            "losses": 54,
+            "share_wins": 0.8029197080291971
+          },
+          "series": {
+            "n": 274,
+            "wins": 220,
+            "ties": 0,
+            "losses": 54,
+            "share_wins": 0.8029197080291971
+          }
+        },
+        "sba": {
+          "pairs": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          },
+          "series": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          }
+        },
+        "tsb": {
+          "pairs": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          },
+          "series": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          }
+        },
+        "lgbm": {
+          "pairs": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          },
+          "series": {
+            "n": 274,
+            "wins": 223,
+            "ties": 0,
+            "losses": 51,
+            "share_wins": 0.8138686131386861
+          }
+        }
+      },
+      "intermittent": {
+        "naive": {
+          "pairs": {
+            "n": 3360,
+            "wins": 1629,
+            "ties": 457,
+            "losses": 1274,
+            "share_wins": 0.48482142857142857
+          },
+          "series": {
+            "n": 3360,
+            "wins": 1629,
+            "ties": 457,
+            "losses": 1274,
+            "share_wins": 0.48482142857142857
+          }
+        },
+        "moving_average": {
+          "pairs": {
+            "n": 3360,
+            "wins": 2985,
+            "ties": 170,
+            "losses": 205,
+            "share_wins": 0.8883928571428571
+          },
+          "series": {
+            "n": 3360,
+            "wins": 2985,
+            "ties": 170,
+            "losses": 205,
+            "share_wins": 0.8883928571428571
+          }
+        },
+        "ses": {
+          "pairs": {
+            "n": 3360,
+            "wins": 3144,
+            "ties": 17,
+            "losses": 199,
+            "share_wins": 0.9357142857142857
+          },
+          "series": {
+            "n": 3360,
+            "wins": 3144,
+            "ties": 17,
+            "losses": 199,
+            "share_wins": 0.9357142857142857
+          }
+        },
+        "croston": {
+          "pairs": {
+            "n": 3360,
+            "wins": 3086,
+            "ties": 0,
+            "losses": 274,
+            "share_wins": 0.9184523809523809
+          },
+          "series": {
+            "n": 3360,
+            "wins": 3086,
+            "ties": 0,
+            "losses": 274,
+            "share_wins": 0.9184523809523809
+          }
+        },
+        "sba": {
+          "pairs": {
+            "n": 3360,
+            "wins": 3089,
+            "ties": 0,
+            "losses": 271,
+            "share_wins": 0.919345238095238
+          },
+          "series": {
+            "n": 3360,
+            "wins": 3089,
+            "ties": 0,
+            "losses": 271,
+            "share_wins": 0.919345238095238
+          }
+        },
+        "tsb": {
+          "pairs": {
+            "n": 3360,
+            "wins": 3157,
+            "ties": 17,
+            "losses": 186,
+            "share_wins": 0.9395833333333333
+          },
+          "series": {
+            "n": 3360,
+            "wins": 3157,
+            "ties": 17,
+            "losses": 186,
+            "share_wins": 0.9395833333333333
+          }
+        },
+        "lgbm": {
+          "pairs": {
+            "n": 3360,
+            "wins": 3176,
+            "ties": 0,
+            "losses": 184,
+            "share_wins": 0.9452380952380952
+          },
+          "series": {
+            "n": 3360,
+            "wins": 3176,
+            "ties": 0,
+            "losses": 184,
+            "share_wins": 0.9452380952380952
+          }
+        }
+      },
+      "lumpy": {
+        "naive": {
+          "pairs": {
+            "n": 1583,
+            "wins": 807,
+            "ties": 187,
+            "losses": 589,
+            "share_wins": 0.5097915350600126
+          },
+          "series": {
+            "n": 1583,
+            "wins": 807,
+            "ties": 187,
+            "losses": 589,
+            "share_wins": 0.5097915350600126
+          }
+        },
+        "moving_average": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1354,
+            "ties": 76,
+            "losses": 153,
+            "share_wins": 0.8553379658875553
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1354,
+            "ties": 76,
+            "losses": 153,
+            "share_wins": 0.8553379658875553
+          }
+        },
+        "ses": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1438,
+            "ties": 8,
+            "losses": 137,
+            "share_wins": 0.9084017687934302
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1438,
+            "ties": 8,
+            "losses": 137,
+            "share_wins": 0.9084017687934302
+          }
+        },
+        "croston": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1414,
+            "ties": 0,
+            "losses": 169,
+            "share_wins": 0.8932406822488945
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1414,
+            "ties": 0,
+            "losses": 169,
+            "share_wins": 0.8932406822488945
+          }
+        },
+        "sba": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1410,
+            "ties": 0,
+            "losses": 173,
+            "share_wins": 0.8907138344914719
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1410,
+            "ties": 0,
+            "losses": 173,
+            "share_wins": 0.8907138344914719
+          }
+        },
+        "tsb": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1446,
+            "ties": 7,
+            "losses": 130,
+            "share_wins": 0.9134554643082754
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1446,
+            "ties": 7,
+            "losses": 130,
+            "share_wins": 0.9134554643082754
+          }
+        },
+        "lgbm": {
+          "pairs": {
+            "n": 1583,
+            "wins": 1462,
+            "ties": 0,
+            "losses": 121,
+            "share_wins": 0.9235628553379659
+          },
+          "series": {
+            "n": 1583,
+            "wins": 1462,
+            "ties": 0,
+            "losses": 121,
+            "share_wins": 0.9235628553379659
+          }
+        }
+      },
+      "smooth": {
+        "naive": {
+          "pairs": {
+            "n": 531,
+            "wins": 228,
+            "ties": 17,
+            "losses": 286,
+            "share_wins": 0.4293785310734463
+          },
+          "series": {
+            "n": 531,
+            "wins": 228,
+            "ties": 17,
+            "losses": 286,
+            "share_wins": 0.4293785310734463
+          }
+        },
+        "moving_average": {
+          "pairs": {
+            "n": 531,
+            "wins": 441,
+            "ties": 3,
+            "losses": 87,
+            "share_wins": 0.8305084745762712
+          },
+          "series": {
+            "n": 531,
+            "wins": 441,
+            "ties": 3,
+            "losses": 87,
+            "share_wins": 0.8305084745762712
+          }
+        },
+        "ses": {
+          "pairs": {
+            "n": 531,
+            "wins": 460,
+            "ties": 0,
+            "losses": 71,
+            "share_wins": 0.8662900188323918
+          },
+          "series": {
+            "n": 531,
+            "wins": 460,
+            "ties": 0,
+            "losses": 71,
+            "share_wins": 0.8662900188323918
+          }
+        },
+        "croston": {
+          "pairs": {
+            "n": 531,
+            "wins": 454,
+            "ties": 0,
+            "losses": 77,
+            "share_wins": 0.8549905838041432
+          },
+          "series": {
+            "n": 531,
+            "wins": 454,
+            "ties": 0,
+            "losses": 77,
+            "share_wins": 0.8549905838041432
+          }
+        },
+        "sba": {
+          "pairs": {
+            "n": 531,
+            "wins": 451,
+            "ties": 0,
+            "losses": 80,
+            "share_wins": 0.8493408662900188
+          },
+          "series": {
+            "n": 531,
+            "wins": 451,
+            "ties": 0,
+            "losses": 80,
+            "share_wins": 0.8493408662900188
+          }
+        },
+        "tsb": {
+          "pairs": {
+            "n": 531,
+            "wins": 460,
+            "ties": 0,
+            "losses": 71,
+            "share_wins": 0.8662900188323918
+          },
+          "series": {
+            "n": 531,
+            "wins": 460,
+            "ties": 0,
+            "losses": 71,
+            "share_wins": 0.8662900188323918
+          }
+        },
+        "lgbm": {
+          "pairs": {
+            "n": 531,
+            "wins": 493,
+            "ties": 0,
+            "losses": 38,
+            "share_wins": 0.928436911487759
+          },
+          "series": {
+            "n": 531,
+            "wins": 493,
+            "ties": 0,
+            "losses": 38,
+            "share_wins": 0.928436911487759
+          }
+        }
+      }
+    }
+  },
+  "wins_vs_best_baseline": {
+    "reference": "tsb",
+    "overall": {
+      "pairs": {
+        "n": 5748,
+        "wins": 3819,
+        "ties": 0,
+        "losses": 1929,
+        "share_wins": 0.6644050104384134
+      },
+      "series": {
+        "n": 5748,
+        "wins": 3819,
+        "ties": 0,
+        "losses": 1929,
+        "share_wins": 0.6644050104384134
+      }
+    }
+  },
+  "weekly_totals": [
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "naive",
+      "forecast": 103642.0,
+      "actual": 81008.0,
+      "error_pct": 27.9404503259
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "naive",
+      "forecast": 103642.0,
+      "actual": 85838.0,
+      "error_pct": 20.7413965843
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "naive",
+      "forecast": 103642.0,
+      "actual": 87169.0,
+      "error_pct": 18.897773291
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "naive",
+      "forecast": 103642.0,
+      "actual": 85546.0,
+      "error_pct": 21.1535314334
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "seasonal_naive",
+      "forecast": 80289.0,
+      "actual": 81008.0,
+      "error_pct": -0.8875666601
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "seasonal_naive",
+      "forecast": 80289.0,
+      "actual": 85838.0,
+      "error_pct": -6.4645029008
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "seasonal_naive",
+      "forecast": 80289.0,
+      "actual": 87169.0,
+      "error_pct": -7.892714153
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "seasonal_naive",
+      "forecast": 80289.0,
+      "actual": 85546.0,
+      "error_pct": -6.1452318051
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "moving_average",
+      "forecast": 81448.5,
+      "actual": 81008.0,
+      "error_pct": 0.5437734545
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "moving_average",
+      "forecast": 81448.5,
+      "actual": 85838.0,
+      "error_pct": -5.113702556
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "moving_average",
+      "forecast": 81448.5,
+      "actual": 87169.0,
+      "error_pct": -6.5625394349
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "moving_average",
+      "forecast": 81448.5,
+      "actual": 85546.0,
+      "error_pct": -4.7898206813
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "ses",
+      "forecast": 82956.7263133737,
+      "actual": 81008.0,
+      "error_pct": 2.4055973649
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "ses",
+      "forecast": 82956.7263133737,
+      "actual": 85838.0,
+      "error_pct": -3.3566412156
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "ses",
+      "forecast": 82956.7263133737,
+      "actual": 87169.0,
+      "error_pct": -4.8323069975
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "ses",
+      "forecast": 82956.7263133737,
+      "actual": 85546.0,
+      "error_pct": -3.0267618435
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "croston",
+      "forecast": 85604.5763254528,
+      "actual": 81008.0,
+      "error_pct": 5.6742251697
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "croston",
+      "forecast": 85604.5763254528,
+      "actual": 85838.0,
+      "error_pct": -0.2719351273
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "croston",
+      "forecast": 85604.5763254528,
+      "actual": 87169.0,
+      "error_pct": -1.7947018717
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "croston",
+      "forecast": 85604.5763254528,
+      "actual": 85546.0,
+      "error_pct": 0.0684734826
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "sba",
+      "forecast": 81324.3475091801,
+      "actual": 81008.0,
+      "error_pct": 0.3905139112
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "sba",
+      "forecast": 81324.3475091801,
+      "actual": 85838.0,
+      "error_pct": -5.2583383709
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "sba",
+      "forecast": 81324.3475091801,
+      "actual": 87169.0,
+      "error_pct": -6.7049667781
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "sba",
+      "forecast": 81324.3475091801,
+      "actual": 85546.0,
+      "error_pct": -4.9349501915
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "tsb",
+      "forecast": 82873.731655066,
+      "actual": 81008.0,
+      "error_pct": 2.3031449426
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "tsb",
+      "forecast": 82873.731655066,
+      "actual": 85838.0,
+      "error_pct": -3.4533287646
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "tsb",
+      "forecast": 82873.731655066,
+      "actual": 87169.0,
+      "error_pct": -4.9275182059
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "tsb",
+      "forecast": 82873.731655066,
+      "actual": 85546.0,
+      "error_pct": -3.1237794227
+    },
+    {
+      "origin": 1913,
+      "week": 1,
+      "baseline": "lgbm",
+      "forecast": 78336.2979808346,
+      "actual": 81008.0,
+      "error_pct": -3.298071819
+    },
+    {
+      "origin": 1913,
+      "week": 2,
+      "baseline": "lgbm",
+      "forecast": 83021.2397229174,
+      "actual": 85838.0,
+      "error_pct": -3.281484048
+    },
+    {
+      "origin": 1913,
+      "week": 3,
+      "baseline": "lgbm",
+      "forecast": 81985.3725515934,
+      "actual": 87169.0,
+      "error_pct": -5.9466409485
+    },
+    {
+      "origin": 1913,
+      "week": 4,
+      "baseline": "lgbm",
+      "forecast": 79557.7881715976,
+      "actual": 85546.0,
+      "error_pct": -6.9999904477
+    }
+  ],
+  "f5_forecasts": {
+    "file": "data/processed/f4_holdout_forecasts.parquet",
+    "rows": 1287552
+  },
+  "run_minutes": 1.1
+}
