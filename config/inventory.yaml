@@ -1,0 +1,146 @@
+# F5 (inventory policy and simulation) settings. Each assumption has a central value, a sensitivity
+# range and a one-line reason. None of these are in the M5 data: they are stated judgement calls, so
+# every F5 money figure is a SIMULATED OUTCOME UNDER THESE ASSUMPTIONS, never an observed saving.
+# Policy settings are scenarios, not tuning: the whole range is reported and nothing is chosen
+# because it looks best on the holdout. Uncertain values are listed under TO VERIFY in NOTES.md.
+
+# --- what is compared ---------------------------------------------------------------------------
+policies: [seasonal_naive, tsb, lgbm]
+policies_reason: >-
+  (a) seasonal naive = "today's simple rule" (same weekday last week); (b) TSB = the best baseline,
+  fixed on the backtest before the holdout run (F4); (c) the frozen LightGBM model. Each gets safety
+  stock from its own backtest errors.
+
+# --- the policy: periodic review, order-up-to -----------------------------------------------------
+# Day timing (day 1 = first forecast day): at the start of a day, orders due that day arrive; on a
+# review day an order is placed for S - inventory position (on hand + on order), arriving lead_time
+# days later (same day if 0); then the day's demand is served from stock on hand.
+# S = forecast demand over the protection period (lead time + review period, starting on the review
+# day) + safety stock. The next order arrives lead + review days later, so this is the stretch the
+# order has to cover.
+
+lead_time_days:
+  central: 2
+  scenarios: [1, 2, 4, 7]
+lead_time_reason: >-
+  Store replenishment of grocery lines from a regional distribution centre usually takes 1-3 days;
+  2 is the middle. 4 and 7 stand for slower direct-from-supplier lines (TO VERIFY: Walmart's actual
+  lead times are not in the data).
+
+review_period_days:
+  central: 7
+  scenarios: [1, 3, 7, 14]
+review_period_reason: >-
+  A weekly order per item is the textbook periodic-review case and matches the weekly cycle in the
+  data (F2). 1 and 3 stand for fast fresh lines ordered daily or twice a week, 14 for slow lines.
+
+order_rounding: ceil_whole_units
+order_rounding_reason: >-
+  Shelves hold whole units, so an order is rounded up to a whole number (and the starting stock
+  too). Case packs and minimum order sizes are not in the data and are ignored.
+
+unmet_demand:
+  central: lost_sales
+  scenarios: [lost_sales, backorders]
+unmet_demand_reason: >-
+  A grocery shopper who finds an empty shelf buys a substitute or shops elsewhere, so unmet demand
+  is lost. Backorders (the shopper waits; the shortfall is served from the next delivery) are run
+  only as a sensitivity check, with the same cost per short unit.
+
+starting_inventory_factor:
+  central: 1.0
+  scenarios: [0.5, 1.0, 1.5]
+starting_inventory_reason: >-
+  Day 1 starts with on-hand stock = factor x the order-up-to level S of the first review (rounded
+  up), nothing on order: "as if the policy had already been running". 0.5 starts short, 1.5 starts
+  overstocked, to show how much the first weeks depend on it.
+
+perishability: ignored
+perishability_reason: >-
+  Shelf life is not in the data, so stock never expires. For fresh FOODS lines this understates the
+  cost of holding stock (and favours policies that hold more); stated as a limitation.
+
+# --- safety stock -------------------------------------------------------------------------------
+service_level:
+  central: 0.95
+  sweep: [0.50, 0.70, 0.80, 0.85, 0.90, 0.95, 0.97, 0.98, 0.99, 0.995]
+service_level_reason: >-
+  Target cycle service level = chance that an order cycle has no lost sale; z is its standard normal
+  quantile. 95% is a common retail target. The sweep (50-99.5%) draws the whole inventory vs fill
+  rate curve; 50% means no safety stock beyond the bias term.
+
+safety_stock_method:
+  central: bias_adjusted   # safety stock = mean + z x sd of the summed error over the protection period
+  comparison: z_sd_only     # safety stock = z x sd (assumes the forecast is unbiased)
+safety_stock_reason: >-
+  Errors are actual - forecast summed over every window of protection-period length in the
+  backtest windows (not daily sd x sqrt(days): daily errors are correlated, e.g. a level that is off
+  stays off). The main method adds the mean summed error, so a series the forecast under-forecasts
+  gets more stock (and an over-forecast series less). "z x sd only" is shown as the comparison.
+  The order-up-to level is never below 0.
+
+error_windows: all_start_days
+error_windows_reason: >-
+  Within each 28-day backtest window every start day whose protection period fits is used
+  (overlapping windows), pooled over the backtest origins; sd uses ddof 1. More windows give a more
+  stable spread than one window per review; neighbouring windows share days, so the effective
+  sample is smaller than the count (about one per review period per origin).
+
+spread_origins: backtest
+spread_origins_reason: >-
+  Holdout simulation: the spread comes from the 4 backtest origins (d_1801..d_1885, windows ending
+  by d_1913), never from holdout errors. Robustness run at d_1885: from the 3 earlier origins only.
+
+# --- the forecast horizon ends --------------------------------------------------------------------
+end_of_horizon: reviews_that_fit
+end_of_horizon_reason: >-
+  The holdout has one forecast (from d_1913) of 28 days. Only reviews whose whole protection period
+  lies inside those 28 days are simulated, so every order-up-to level uses a full forecast sum and
+  the same window length as its safety stock (capping the last sum at the forecast end would need a
+  different spread and run stock down artificially). Measured days run from day lead_time + 1 (the
+  first day an order can arrive; days before it are a warm-up fed only by the starting stock) to the
+  last day covered by the last review. With lead 2 and review 7: reviews on days 1, 8, 15, measured
+  days 3-23.
+
+# --- money ----------------------------------------------------------------------------------------
+price: last_known_at_origin
+price_reason: >-
+  Each unit is valued at the item-store's last known price at the forecast origin (F3's
+  last_full_week rule), fixed over the simulation, so no holdout price is used.
+
+holding_cost_rate_per_year:
+  central: 0.25
+  scenarios: [0.15, 0.25, 0.40]
+holding_cost_reason: >-
+  Share of the item's price per year of holding one unit (capital, space, handling, shrink); 20-30%
+  is the usual textbook range, 15-40% the sensitivity. Per unit-day = rate x price / 365, charged
+  on stock on hand at the end of each measured day. Perishability is not included (see above).
+
+stockout_cost_share_of_price:
+  central: 0.25
+  scenarios: [0.10, 0.25, 0.50, 1.00]
+stockout_cost_reason: >-
+  Cost of one lost unit as a share of its price, a proxy for the lost gross margin (US grocery gross
+  margins are roughly 25%; TO VERIFY). 10% = thin margin, 50% and 100% add lost goodwill or the
+  rest of the basket.
+
+# --- reporting ------------------------------------------------------------------------------------
+top_revenue_share: 0.10
+top_revenue_reason: >-
+  "Top revenue items" = the 10% of item-stores with the highest revenue weight at the origin (units
+  of the last 28 days x last known price, F3's weight), which is known when the policy is set.
+
+concentration_share: 0.10
+concentration_reason: share of lost-sales cost and of inventory money held by the top 10% of item-stores, a simple concentration measure
+
+compare_fill_rates: [0.90, 0.95, 0.98]
+compare_fill_rates_reason: >-
+  Fixed before the simulation: the fill rates at which the inventory money each policy needs is
+  read off its service-level curve (linear interpolation between sweep points; not reported where
+  a curve does not reach the fill rate).
+
+robustness_origin: 1885
+robustness_reason: >-
+  The last backtest origin, entirely before the holdout: the same simulation with the error spread
+  from origins d_1801, d_1829 and d_1857 only, to check that the conclusions do not depend on the
+  one holdout window.

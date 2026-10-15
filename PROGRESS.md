@@ -148,3 +148,44 @@ How to re-render: `.venv/bin/python -m forecast.render_f4_holdout`. The holdout 
 
 Next: F5 (inventory policy and simulation), sizing safety stock from the backtest residuals and
 replaying the holdout.
+
+
+## F5: Inventory policy and simulation (done 2026-10-15)
+
+Built:
+- `config/inventory.yaml`: policies (seasonal naive, TSB, LightGBM), periodic-review order-up-to
+  policy, lead time, review period, service levels, safety-stock method, error windows, end-of-horizon
+  rule, lost sales vs backorders, starting stock, holding and lost-sale cost, perishability (ignored),
+  price rule and reporting settings. Each with a central value, a sensitivity range and a reason.
+- `src/forecast/inventory.py`: schedule (only reviews whose protection period fits in the 28 forecast
+  days; warm-up = days before the first possible delivery), safety stock from backtest errors summed
+  over protection-period windows (mean + z x sd, or z x sd only), a guard that refuses any error origin
+  whose days reach the forecast days, the day-by-day simulation (numpy, vectorised across series),
+  per-series measures and totals.
+- `src/forecast/run_f5.py` (`--render` re-renders from saved results), `src/forecast/render_f5.py`,
+  four figures in `plots.py`, `docs/templates/F5_inventory.md`. Holdout forecasts are loaded without
+  their residual column; safety stock uses `f4_backtest_forecasts.parquet` only.
+
+Outputs: `results/f5_inventory.json`, `results/f5_service_level_sweep.csv`, `results/f5_sensitivity.csv`,
+`results/f5_main_by_group.csv` (aggregates only, no item rows), `docs/figures/f5_*.png`,
+`docs/F5_inventory.md`. Runs in about 14 s, 1.2 GB peak resident memory. Re-running gives identical
+outputs.
+
+Result (every number in `docs/F5_inventory.md`, simulated under the config assumptions): at the
+central scenario the three policies reach about the same fill rate, and the model-based policy holds
+the least stock. At equal fill rate the model needs less inventory than both baselines in all 20
+sensitivity scenarios and in the pre-holdout check at d_1885. The ranking by total cost at a fixed
+target changes in 4 of 20 scenarios (short review periods, high lost-sale cost). The bias-adjusted
+safety stock (main method, fixed in advance) did worse than z x sd only in both windows; achieved
+cycle service level is about 3 points below target (see NOTES).
+
+Tests: 35 new unit tests (30 inventory: schedule and end-of-horizon rule, order-up-to and arrival
+timing, zero lead time, stock on order, rounding and floor, start stock, lost sales, backorders, fill
+rate / stockout days / costs by hand, summed-window spread with zero error, bias, correlated errors,
+missing days, leakage guard; 5 runner: loading, equal-fill reading, ranking, top-revenue flag,
+exclusion), 3 new real-data checks (spread origins, holdout residuals cannot change the safety
+stock, result consistency and doc = rendered results). Totals: 140 unit, 15 real-data, all pass.
+
+How to run: `.venv/bin/python -m forecast.run_f5` (after F4; about 15 s).
+
+Next: F6 (report, dashboard, README, clean-clone check). Not started.
