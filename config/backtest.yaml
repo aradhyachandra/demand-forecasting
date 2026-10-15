@@ -1,0 +1,58 @@
+# F3 (baselines and rolling-origin backtest) settings. Each choice has a one-line reason.
+# The origins are derived, not listed: the last training day is the last day in the file minus
+# holdout_days (config/holdout.yaml); origin k (k = 1..n_origins, oldest first) is
+# last_train - horizon_days * (n_origins - k + 1). Each window is origin+1 .. origin+horizon_days, so
+# the last window ends on the last training day and nothing in the holdout is read or scored.
+# An origin is the last day of known history: a forecast made at origin T uses only days <= T.
+
+horizon_days: 28
+horizon_reason: >-
+  The M5 horizon and the project horizon (PROJECT_PLAN section 4); the same length as the holdout,
+  so backtest windows look like the final test.
+
+n_origins: 4
+n_origins_reason: >-
+  Four back-to-back 28-day windows (16 weeks) cover different weeks of the year and show how
+  stable the ranking is, while staying close to the holdout in time. With the current holdout this
+  gives origins d_1801, d_1829, d_1857, d_1885.
+
+min_history_days: 56
+min_history_reason: >-
+  A series is scored at an origin only if it was listed on at least 56 days up to the origin
+  (8 weeks): enough for a full 28-day moving average, several weeks of same-weekday history and a
+  scaling denominator. Series launched later are counted and reported, not silently dropped.
+
+season_length_days: 7   # reason: the weekly cycle is the strongest regular pattern found in F2 (weekend +19-23%)
+
+moving_average_days: 28   # reason: four full weeks, so every weekday counts equally; matches the horizon
+
+ses_alpha: 0.1
+ses_alpha_reason: >-
+  Fixed, not tuned (F3 compares simple rules; tuning happens in F4 on the backtest only). 0.1 puts
+  most weight on roughly the last 10-20 days, a common default for noisy daily retail demand.
+
+croston_alpha: 0.1
+croston_alpha_reason: >-
+  Fixed, not tuned. Smoothing constants of 0.05-0.2 are the usual range for Croston-type methods on
+  intermittent demand (Syntetos & Boylan 2005); 0.1 sits in the middle. The same value is used for
+  demand sizes and intervals, and SBA uses it in its bias factor (1 - alpha/2).
+
+tsb_alpha_demand: 0.1        # reason: same as croston_alpha, so TSB and Croston differ only in how they model the gaps
+tsb_alpha_probability: 0.1   # reason: fixed middle-of-range value (Teunter, Syntetos & Babai 2011 use 0.01-0.3); not tuned
+
+baselines: [naive, seasonal_naive, moving_average, ses, croston, sba, tsb]
+reference_baseline: seasonal_naive   # reason: the "same weekday last week" rule is the simplest one that knows the weekly cycle; win counts are against it
+
+weight_days: 28
+weight_reason: >-
+  Revenue weight of a series at an origin = units sold in the 28 days up to the origin x the last
+  price known at the origin, as in the M5 WRMSSE (dollar sales over the last 28 days). Only days
+  <= origin are used, so the weights do not leak.
+
+last_known_price: last_full_week
+last_known_price_reason: >-
+  The weekly price of the week that contains the origin also covers days after it, and F2 found M5
+  prices change only in weeks with sales, so that price could reveal future sales. The price used is
+  the one of the last listed day in a week (Saturday-Friday) that ended on or before the origin.
+
+tie_tolerance: 1.0e-9   # reason: two RMSE values closer than this count as a tie (e.g. both forecasts all zero)

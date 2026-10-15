@@ -26,6 +26,27 @@
 - **For F4:** use the last price known at the forecast origin, not the future weekly price (a price
   change in a future week reveals that the item sold that week).
 
+## Decisions in F3
+
+- **Origin = last day of known history.** Windows are derived from `holdout.yaml` + horizon +
+  n_origins, so changing the holdout moves them; a real-data test pins the current values.
+- **RMSSE denominator on listed days**, over pairs of consecutive days both listed. M5 instead starts
+  each series at its first non-zero sale. With the explicit listing flag, listed days are the cleaner
+  start; it does change values slightly versus the M5 definition.
+- **WRMSSE here is series-level only** (item-store), averaged over the 4 origins. The M5 WRMSSE also
+  averages 11 aggregate levels (store, dept, total ...), so our numbers are not comparable with M5
+  leaderboard scores.
+- **Last known price = last full M5 week (Saturday-Friday) ended by the origin**, because the
+  origin's own week also covers later days and (F2) its price can reveal later sales. Checked: weeks
+  in the slice change on Saturday (d_1800 starts a new wm_yr_wk).
+- **Zero-scale series** would be left out of RMSSE/WRMSSE but kept in MAE, RMSE and win counts (which
+  use RMSE). On the real slice there were none at any origin, because every scored series has at
+  least 56 listed days and some sales.
+- **Win counts use RMSE** (same order as RMSSE within a series). Ties (within 1e-9) are mostly items
+  with no recent sales where both rules forecast (almost) zero.
+- **Smoothing constants fixed at 0.1** (SES, Croston/SBA, TSB) and not tuned; F4 may tune on the
+  backtest windows only.
+
 ## TO VERIFY
 
 - **Holdout dates:** the final holdout is d_1914 to d_1941 (2016-04-25 to 2016-05-22), the last 28 days
@@ -43,3 +64,11 @@
   income (wages, other benefits). Do not call it a SNAP effect in the report without that caveat.
 - **Event effects use 5-6 occurrences each:** treat single-event numbers as rough; only the large ones
   (Christmas, Thanksgiving, New Year, Labor Day, Presidents' Day) are consistent across years.
+- **F3 ranking among smoothing rules is close:** TSB, SES, SBA, moving average and Croston lie within
+  about 0.01 WRMSSE. Do not call TSB clearly "the best" in the report; the robust result is smoothing
+  vs naive rules. The ranking may also depend on the fixed alphas (0.1).
+- **First backtest window under-forecasts the slice total** (TSB -8% to -14% per week from origin
+  d_1801). Likely cause: the 28 days before 2016-01-02 include Christmas (stores closed) and the
+  year-end weeks, which pull the level down. Check before quoting.
+- **TSB with alpha_probability 0.1 ends up very close to SES** (nearly identical win counts). Plausible
+  for these series but worth a sanity check on a few series plots before the report.

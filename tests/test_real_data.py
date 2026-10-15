@@ -59,3 +59,28 @@ def test_f2_results_are_consistent():
     assert sum(c["units"] for c in r["classes"]) == r["training"]["units"]
     occ = pd.read_csv(ROOT / "results" / "f2_event_occurrences.csv")
     assert occ["date"].max() < f1["holdout_reserved"]["first_date"]
+
+
+def test_f3_panel_stops_before_the_holdout():
+    from forecast import backtest as bt
+    data = config.load("data")
+    p = bt.load_panel(ROOT / data["processed_dir"] / data["slice_parquet"],
+                      config.load("holdout")["holdout_days"], "1GB", 2)
+    assert p.last_train == 1913 and p.units.shape == (5748, 1913)
+    assert p.wday[0] == 1 and set(p.wday.tolist()) == set(range(1, 8))  # d_1 is a Saturday
+
+
+def test_f3_results_are_consistent():
+    r = json.loads((ROOT / "results" / "f3_backtest.json").read_text())
+    f1 = json.loads((ROOT / "results" / "f1_data_report.json").read_text())
+    assert r["setup"]["origins"] == [1801, 1829, 1857, 1885]
+    assert max(c["last_scored_d"] for c in r["coverage"]) < f1["holdout_reserved"]["first_d"]
+    for c in r["coverage"]:
+        assert c["n_scored"] + c["n_short_history"] + c["n_no_window_days"] == c["n_series"]
+        assert sum(c["classes"].values()) == c["n_scored"]
+    assert r["setup"]["n_series_origin_pairs"] == sum(c["n_scored"] for c in r["coverage"])
+    data = config.load("data")
+    ps = pd.read_parquet(ROOT / data["processed_dir"] / "f3_series_metrics.parquet",
+                         columns=["origin", "baseline", "n_days"])
+    assert len(ps) == r["setup"]["n_series_origin_pairs"] * len(r["setup"]["baselines"])
+    assert (ps["n_days"] >= 1).all() and (ps["n_days"] <= r["setup"]["horizon_days"]).all()

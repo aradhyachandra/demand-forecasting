@@ -55,4 +55,37 @@ are biased (see NOTES).
 
 How to run: `.venv/bin/python -m forecast.run_f2` (after run_f1).
 
-Next: F3 (baselines and rolling-origin backtest harness).
+
+
+## F3: Baselines and rolling-origin backtest harness (done 2026-10-15)
+
+Built:
+- `config/backtest.yaml`: horizon 28, 4 origins (derived from `holdout.yaml`: d_1801, d_1829, d_1857,
+  d_1885, scoring d_1802..d_1913), minimum history 56 listed days, fixed (untuned) smoothing
+  constants, revenue weights and last-known-price rule, each with a reason.
+- `src/forecast/baselines.py`: naive, seasonal naive, 28-day moving average, SES, Croston, SBA, TSB as
+  pure functions (history up to the origin in, 28-day forecast out), vectorised over series;
+  unlisted days are skipped.
+- `src/forecast/backtest.py` + `sql/f3_*.sql`: loads only training days as series x day matrices,
+  inputs fixed at each origin (forecasts, RMSSE scale on listed days, revenue weight = units of the
+  last 28 days x price of the last full week, demand class recomputed from days <= origin), metrics
+  (MAE, RMSE, bias, RMSSE, WRMSSE, weekly WAPE, slice weekly totals), coverage counts and win counts
+  vs seasonal naive (per series-origin pair and per series).
+- `src/forecast/run_f3.py`, three figures in `plots.py`, `docs/templates/F3_baselines_backtest.md`.
+
+Outputs: `results/f3_backtest.json`, `results/f3_summary.csv`, `results/f3_weekly_totals.csv`, three
+figures in `docs/figures/f3_*.png`, `docs/F3_baselines_backtest.md`. Per-series metrics in
+`data/processed/f3_series_metrics.parquet` (gitignored). Runs in about 15 s, about 1 GB peak memory.
+Re-running gives an identical results JSON.
+
+Tests: 31 new unit tests (13 baselines, 18 harness: origins and windows, holdout never loaded, scale
+on listed days, zero denominator, partly unlisted window, no-sales series, short history counted,
+last-known price, class at origin, leakage when every value after the origin changes, aggregation,
+win counts); 2 new real-data checks. Totals: 75 unit, 8 real-data, all pass.
+
+Main findings are in `docs/F3_baselines_backtest.md`: all smoothing rules beat both naive rules
+clearly and sit close together; TSB is lowest overall, but the gaps among smoothing rules are small.
+
+How to run: `.venv/bin/python -m forecast.run_f3` (after run_f1).
+
+Next: F4 (LightGBM global model, tuning on the backtest windows only, then one holdout run).

@@ -195,3 +195,93 @@ def price_cut_effect(summary: dict, before_weeks: int, path):
 
 def summary_weeks(summary: dict) -> int:
     return max(r["week"] for r in next(iter(summary["profiles"].values())))
+
+
+# --- F3 -----------------------------------------------------------------------------------------
+
+F3_SHORT = {"naive": "Naive", "seasonal_naive": "Seasonal naive", "moving_average": "28-day MA",
+            "ses": "SES", "croston": "Croston", "sba": "SBA", "tsb": "TSB"}
+ORANGE = "#eb6834"
+
+
+def _baseline_bars(ax, metrics: dict, order: list[str], ref: str, key: str = "wrmsse"):
+    """Horizontal bars, one per baseline (top to bottom in `order`); the best is dark blue, the
+    reference grey, the rest light blue. Values written at the bar ends."""
+    vals = [metrics[b][key] for b in order]
+    best = order[int(np.argmin(vals))]
+    colors = [BLUE if b == best else GRAY if b == ref else BLUE_LIGHT for b in order]
+    bars = ax.barh([F3_SHORT[b] for b in order][::-1], vals[::-1], color=colors[::-1], height=0.65)
+    for b, v in zip(bars, vals[::-1]):
+        ax.text(v + 0.01, b.get_y() + b.get_height() / 2, f"{v:.3f}", va="center", fontsize=7.5, color=INK)
+    ax.axvline(1.0, color=MUTED, linewidth=1, linestyle=":")
+    ax.set_xlim(0, max(vals) * 1.22)
+    _style(ax, grid_axis="x")
+
+
+def f3_scaled_error_by_class(report: dict, path):
+    """Revenue-weighted RMSSE per baseline: all series, then one panel per demand class."""
+    order, ref = report["setup"]["baselines"], report["setup"]["reference_baseline"]
+    panels = [("All series", report["overall"])] + [(c, m) for c, m in report["by_class"].items()]
+    fig, axes = plt.subplots(1, len(panels), figsize=(2.6 * len(panels), 3.4), sharey=True)
+    for ax, (name, m) in zip(axes, panels):
+        _baseline_bars(ax, m, order, ref)
+        n = m[order[0]]["n"]
+        ax.set_title(f"{name}\n{n:,} series-origins", fontsize=9, color=INK, loc="left")
+        ax.set_xticks([0, 0.5, 1.0])
+    axes[0].text(0, 1.22, "Scaled error by baseline and demand class (WRMSSE, lower is better)",
+                 transform=axes[0].transAxes, fontsize=11, color=INK)
+    axes[0].text(0, 1.155, "Mean over the 4 backtest origins; dark blue = best in the panel, grey = seasonal "
+                 "naive, dotted line = 1 (as bad as the in-sample one-step naive)",
+                 transform=axes[0].transAxes, fontsize=8, color=MUTED)
+    fig.subplots_adjust(wspace=0.12, top=0.78)
+    _save(fig, path)
+
+
+def f3_error_by_origin(report: dict, path):
+    """Per baseline: WRMSSE at each of the origins (dots) and their range (line)."""
+    order = report["setup"]["baselines"]
+    origins = list(report["by_origin"])
+    fig, ax = plt.subplots(figsize=(8, 3.8))
+    for i, b in enumerate(order[::-1]):
+        vals = [report["by_origin"][o][b]["wrmsse"] for o in origins]
+        ax.hlines(i, min(vals), max(vals), color=BLUE_LIGHT, linewidth=4)
+        ax.scatter(vals, [i] * len(vals), s=28, color=BLUE, zorder=3, edgecolors="white", linewidths=1)
+        ax.text(max(vals) + 0.012, i, f"{min(vals):.3f} - {max(vals):.3f}", va="center", fontsize=7.5, color=INK)
+    ax.set_yticks(range(len(order)), [F3_SHORT[b] for b in order[::-1]])
+    lo = min(report["by_origin"][o][b]["wrmsse"] for o in origins for b in order)
+    hi = max(report["by_origin"][o][b]["wrmsse"] for o in origins for b in order)
+    ax.set_xlim(lo - 0.05, hi + 0.12)
+    ax.set_xlabel("WRMSSE at one origin (lower is better)", fontsize=8.5, color=INK)
+    _style(ax, grid_axis="x")
+    _title(ax, "How much each baseline's error moves between the 4 origins",
+           "One dot per origin (" + ", ".join(f"d_{o}" for o in origins) + "); line = lowest to highest")
+    _save(fig, path)
+
+
+def f3_wins(report: dict, path):
+    """Share of series-origin pairs where each baseline has a lower RMSE than the reference
+    (wins), the same (ties) or a higher one (losses)."""
+    w = report["wins_vs_reference"]["overall"]
+    ref = report["wins_vs_reference"]["reference"]
+    order = [b for b in report["setup"]["baselines"] if b != ref]
+    fig, ax = plt.subplots(figsize=(8, 3.4))
+    y = [F3_SHORT[b] for b in order][::-1]
+    left = np.zeros(len(order))
+    for part, color, label in (("wins", BLUE, "beats seasonal naive"), ("ties", GRID, "tie"),
+                               ("losses", ORANGE, "worse than seasonal naive")):
+        share = np.array([w[b]["pairs"][part] / w[b]["pairs"]["n"] for b in order][::-1])
+        bars = ax.barh(y, share, left=left, color=color, height=0.65, label=label,
+                       edgecolor="white", linewidth=2)
+        for bar, s in zip(bars, share):
+            if s >= 0.05:
+                ax.text(bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() / 2, f"{s:.0%}",
+                        ha="center", va="center", fontsize=7.5, color="white" if color != GRID else INK)
+        left += share
+    ax.set_xlim(0, 1)
+    ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0))
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=3, frameon=False, fontsize=8)
+    _style(ax, grid_axis="x")
+    n = w[order[0]]["pairs"]["n"]
+    _title(ax, "How often each baseline beats seasonal naive, series by series",
+           f"{n:,} series-origin pairs; comparison on RMSE over the 28-day window")
+    _save(fig, path)
