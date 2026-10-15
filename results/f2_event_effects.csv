@@ -1,0 +1,31 @@
+event_name,event_type,n,mean_lift_pct,min_lift_pct,max_lift_pct
+LaborDay,National,5,16.9702,9.1531,23.5822
+PresidentsDay,National,6,14.0727,8.7951,18.8878
+VeteransDay,National,5,9.3369,-4.9041,17.5061
+MartinLutherKingDay,National,5,8.0455,0.3694,19.3766
+MemorialDay,National,5,6.7021,2.8084,12.6699
+ColumbusDay,National,5,4.5850,-2.1417,14.3478
+LentWeek2,Religious,6,3.1778,-9.4861,12.9193
+StPatricksDay,Cultural,6,2.5464,-3.5088,6.9493
+Purim End,Religious,6,2.1301,-2.3201,8.0218
+LentStart,Religious,6,1.1905,-13.4234,32.1778
+NBAFinalsEnd,Sporting,5,1.1639,-4.1724,14.0732
+EidAlAdha,Religious,5,0.3355,-5.9610,8.2732
+IndependenceDay,National,5,0.3259,-16.2788,11.6810
+Chanukah End,Religious,5,0.2097,-9.4428,7.5793
+Ramadan starts,Religious,5,-0.3009,-9.2485,5.3908
+Eid al-Fitr,Religious,5,-0.7727,-11.5989,13.0215
+OrthodoxChristmas,Religious,5,-0.8214,-11.9409,8.5882
+NBAFinalsStart,Sporting,5,-2.9662,-12.6620,12.5164
+Pesach End,Religious,5,-3.2385,-10.8611,1.1435
+Halloween,Cultural,5,-4.6718,-16.1973,5.2586
+Father's day,Cultural,5,-5.5371,-9.2959,-1.8541
+SuperBowl,Sporting,6,-5.7702,-18.0100,5.5283
+OrthodoxEaster,Religious,5,-6.9615,-12.3062,-0.7719
+ValentinesDay,Cultural,6,-7.4668,-13.9578,-3.6263
+Cinco De Mayo,Cultural,5,-9.3768,-21.1101,-2.8234
+Easter,Cultural,6,-10.1329,-20.7522,-0.1884
+Mother's day,Cultural,5,-13.9736,-23.4842,-5.8299
+Thanksgiving,National,5,-25.2783,-30.4056,-19.2000
+NewYear,National,5,-26.4448,-42.1013,-16.9925
+Christmas,National,5,-99.9304,-99.9439,-99.9223

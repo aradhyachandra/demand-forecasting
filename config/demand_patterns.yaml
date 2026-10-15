@@ -1,0 +1,48 @@
+# F2 (demand exploration) settings. Each choice has a one-line reason. Only training days are used
+# (d_1 .. last day before the holdout in config/holdout.yaml) and only days the item was listed.
+
+classification:
+  # Syntetos-Boylan-Croston demand classes from ADI (average days between sales) and CV² (squared
+  # coefficient of variation of the non-zero daily sales).
+  adi_cutoff: 1.32
+  cv2_cutoff: 0.49
+  reason: >-
+    The standard cut-offs from Syntetos, Boylan & Croston (2005, Journal of the Operational Research
+    Society): below them simple smoothing does well; above them Croston-type methods are preferred.
+    Values on a cut-off count as the "high" side.
+  adi_definition: listed days / days with sales  # reason: simple, standard; every listed day counts
+  cv2_ddof: 1   # reason: sample standard deviation of non-zero sales, as in R's tsintermittent::idclass
+  min_nonzero_days: 2   # reason: CV² needs at least two non-zero sales; sparser series get "too_few_sales"
+
+calendar_effects:
+  # Units per listed series-day (total units / number of series on sale that day), so effects are not
+  # driven by how many items were listed. Event days are left out of weekday, month and SNAP figures.
+  event_window_weeks: 4
+  event_window_reason: >-
+    An event day is compared with the same weekday in the 4 weeks before and after (up to 8 days),
+    close enough that trend and season barely move, wide enough to average out noise.
+  event_match_snap: true
+  event_match_snap_reason: >-
+    Comparison days must have the same SNAP status as the event day, because SNAP days (1st-10th of
+    the month in CA) sell more; otherwise New Year (always SNAP) would look better than it is.
+  event_comparison_excludes_event_days: true   # reason: a comparison day that is itself an event would blur the contrast
+
+price_cuts:
+  min_cut_pct: 5
+  min_cut_reason: >-
+    A week-on-week price drop of at least 5% counts as a price cut; smaller moves are mostly cents
+    of rounding or cost pass-through that shoppers would hardly notice.
+  before_weeks: 4
+  after_weeks: 2
+  window_reason: >-
+    Baseline = 4 full weeks before the cut at one unchanged price (a clean "before"); effect = the
+    cut week and the next week (M5 price cuts are often short promotions, so longer windows would mix
+    in the price going back up).
+  cut_size_buckets_pct: [5, 10, 20, 100]   # reason: small / medium / large cuts reported separately
+  full_weeks_only: true   # reason: every week in a window needs all 7 training days listed, so partial weeks (launch, the week the holdout splits) cannot distort the daily rate
+  profile_weeks: 8   # reason: the week-by-week picture 8 weeks either side of a cut shows what the 4+2 week summary hides (dips, recovery)
+  control_windows: true
+  control_reason: >-
+    The same before/after calculation on 6-week stretches with no price change at all. Their ratio
+    shows how much "after vs before" moves with no cut (trend, season, noise), so a price-cut lift
+    can be read against it.
