@@ -113,6 +113,11 @@ def revenue_weight(units_hist, price_hist, wday_hist, weight_days: int) -> np.nd
 
 def class_at_origin(hist: np.ndarray, cls_cfg: dict) -> np.ndarray:
     """F2 demand class (demand_patterns.classify) from listed days up to the origin only."""
+    return intermittency_stats(hist, cls_cfg)["demand_class"].to_numpy()
+
+
+def intermittency_stats(hist: np.ndarray, cls_cfg: dict) -> pd.DataFrame:
+    """ADI, CV² and demand class per series (demand_patterns.classify) from the listed days in hist."""
     h = np.asarray(hist, dtype=float)
     listed = ~np.isnan(h)
     nz = listed & (h > 0)
@@ -125,7 +130,7 @@ def class_at_origin(hist: np.ndarray, cls_cfg: dict) -> np.ndarray:
         var_nz = np.where(n_nz > ddof, dev2 / np.maximum(n_nz - ddof, 1), np.nan)
     stats = pd.DataFrame({"id": np.arange(len(h)), "listed_days": listed.sum(axis=1), "nonzero_days": n_nz,
                           "mean_nz": mean_nz, "var_nz": var_nz})
-    return dp.classify(stats, cls_cfg)["demand_class"].to_numpy()
+    return dp.classify(stats, cls_cfg)
 
 
 def origin_inputs(panel: Panel, origin: int, cfg: dict, cls_cfg: dict) -> dict:
@@ -167,9 +172,11 @@ def score(forecast: np.ndarray, actual: np.ndarray, scale: np.ndarray, season: i
             "wk_forecast": fw, "wk_actual": yw}
 
 
-def evaluate(panel: Panel, cfg: dict, cls_cfg: dict) -> tuple[pd.DataFrame, list[dict], pd.DataFrame]:
+def evaluate(panel: Panel, cfg: dict, cls_cfg: dict, extra=None) -> tuple[pd.DataFrame, list[dict], pd.DataFrame]:
     """Run every baseline at every origin. Returns per-series metrics (one row per series, origin
-    and baseline; scored series only), coverage per origin, and slice weekly totals."""
+    and baseline; scored series only), coverage per origin, and slice weekly totals.
+    extra(origin, inputs) may return more {name: series x horizon forecast} (F4 models); they are
+    scored on exactly the same series and days as the baselines."""
     H, season = cfg["horizon_days"], cfg["season_length_days"]
     rows, coverage, weekly = [], [], []
     for origin in origins(panel.last_train, H, cfg["n_origins"]):
@@ -195,7 +202,10 @@ def evaluate(panel: Panel, cfg: dict, cls_cfg: dict) -> tuple[pd.DataFrame, list
         base = pd.DataFrame({"id": panel.ids[scored], "dept_id": panel.dept[scored], "origin": origin,
                              "demand_class": cls, "scale": inp["scale"][scored],
                              "weight": inp["weight"][scored]})
-        for name, f in inp["forecasts"].items():
+        forecasts = dict(inp["forecasts"])
+        if extra is not None:
+            forecasts.update(extra(origin, inp))
+        for name, f in forecasts.items():
             s = score(f[scored], y[scored], inp["scale"][scored], season)
             rows.append(base.assign(
                 baseline=name, n_days=s["n_days"], mae=s["mae"], rmse=s["rmse"], bias=s["bias"],

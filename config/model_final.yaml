@@ -1,0 +1,23 @@
+# F4 final model: frozen by `python -m forecast.run_f4` (part A). Do not edit by hand.
+# Used once by `python -m forecast.run_f4_holdout` (part B), from a clean, committed tree.
+# The setting was chosen on the 4 backtest origins only (lowest mean WRMSSE, results/f4_backtest.json);
+# the holdout was not read, scored or tuned on.
+
+chosen_setting: s1_small
+chosen_reason: lowest WRMSSE averaged over the backtest origins d_1801, d_1829, d_1857, d_1885 (0.8306); the whole grid is in results/f4_grid.csv
+params:
+  num_leaves: 31
+  learning_rate: 0.05
+  min_data_in_leaf: 100
+rounds: 200
+
+# Everything else (features, objective, fixed LightGBM parameters, training-origin spacing, closed
+# days) comes from config/model.yaml, which must be unchanged since this freeze:
+model_yaml_sha256: 4ab25ff70a7b2d429d6b656f96452645d1effc4152c4172a65cd4ad49c5da20f
+
+final_run:
+  forecast_origin: 1913        # the last training day; nothing after it is used as an input
+  forecast_days: [1914, 1941]   # the holdout, d_1914..d_1941
+  training_origins: [1535, 1885]   # every 14 days, 26 origins; their target days end on d_1913
+  training_reason: the same recipe as in the backtest (one year of origins before the forecast origin), moved to the last training day so the model sees the most recent year
+  baselines: F3 baselines from config/backtest.yaml, same origin, scored with the same metrics and weights

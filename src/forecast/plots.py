@@ -204,13 +204,14 @@ F3_SHORT = {"naive": "Naive", "seasonal_naive": "Seasonal naive", "moving_averag
 ORANGE = "#eb6834"
 
 
-def _baseline_bars(ax, metrics: dict, order: list[str], ref: str, key: str = "wrmsse"):
+def _baseline_bars(ax, metrics: dict, order: list[str], ref: str, key: str = "wrmsse", labels=None):
     """Horizontal bars, one per baseline (top to bottom in `order`); the best is dark blue, the
     reference grey, the rest light blue. Values written at the bar ends."""
     vals = [metrics[b][key] for b in order]
     best = order[int(np.argmin(vals))]
     colors = [BLUE if b == best else GRAY if b == ref else BLUE_LIGHT for b in order]
-    bars = ax.barh([F3_SHORT[b] for b in order][::-1], vals[::-1], color=colors[::-1], height=0.65)
+    labels = labels or F3_SHORT
+    bars = ax.barh([labels[b] for b in order][::-1], vals[::-1], color=colors[::-1], height=0.65)
     for b, v in zip(bars, vals[::-1]):
         ax.text(v + 0.01, b.get_y() + b.get_height() / 2, f"{v:.3f}", va="center", fontsize=7.5, color=INK)
     ax.axvline(1.0, color=MUTED, linewidth=1, linestyle=":")
@@ -284,4 +285,84 @@ def f3_wins(report: dict, path):
     n = w[order[0]]["pairs"]["n"]
     _title(ax, "How often each baseline beats seasonal naive, series by series",
            f"{n:,} series-origin pairs; comparison on RMSE over the 28-day window")
+    _save(fig, path)
+
+
+# --- F4 -----------------------------------------------------------------------------------------
+
+F4_SHORT = {**F3_SHORT, "lgbm": "LightGBM"}
+
+
+def f4_grid(report: dict, path):
+    """WRMSSE (mean over origins) of every grid point: one row per setting, one dot per number of
+    trees; the winner dark blue; dashed line = best F3 baseline."""
+    grid = report["grid"]
+    settings = list(dict.fromkeys(g["setting"] for g in grid))
+    rounds = sorted({g["rounds"] for g in grid})
+    win = report["chosen"]["name"]
+    bb = report["best_baseline"]
+    fig, ax = plt.subplots(figsize=(8, 3.6))
+    for i, s in enumerate(settings[::-1]):
+        gs = sorted((g for g in grid if g["setting"] == s), key=lambda g: g["rounds"])
+        vals = [g["wrmsse"] for g in gs]
+        ax.hlines(i, min(vals), max(vals), color=BLUE_LIGHT, linewidth=3)
+        for k, g in enumerate(gs):
+            ax.scatter(g["wrmsse"], i, s=60 if g["name"] == win else 34, zorder=3, edgecolors="white", linewidths=1.5,
+                       color=BLUE if g["name"] == win else BLUE_LIGHT)
+            ax.text(g["wrmsse"], i + (0.2 if k % 2 == 0 else -0.2), f"{g['rounds']}", ha="center",
+                    va="bottom" if k % 2 == 0 else "top", fontsize=6.5, color=MUTED)
+        g = gs[int(np.argmin(vals))]
+        ax.text(max(vals) + 0.002, i, f"  best {g['wrmsse']:.3f} at {g['rounds']} trees", va="center",
+                fontsize=7.5, color=INK)
+    ax.axvline(bb["wrmsse"], color=GRAY, linestyle="--", linewidth=1)
+    ax.text(bb["wrmsse"], len(settings) - 0.35, f"{F4_SHORT[bb['name']]} {bb['wrmsse']:.3f}", ha="center",
+            fontsize=7.5, color=MUTED)
+    ax.set_yticks(range(len(settings)), settings[::-1])
+    lo = min(min(g["wrmsse"] for g in grid), bb["wrmsse"])
+    hi = max(max(g["wrmsse"] for g in grid), bb["wrmsse"])
+    ax.set_xlim(lo - 0.01, hi + 0.04)
+    ax.set_ylim(-0.6, len(settings) - 0.1)
+    ax.set_xlabel("WRMSSE, mean over the 4 backtest origins (lower is better)", fontsize=8.5, color=INK)
+    _style(ax, grid_axis="x")
+    _title(ax, "Tuning grid: every setting and number of trees",
+           f"Small numbers = trees ({', '.join(map(str, rounds))}), alternately above and below; dark blue = chosen; dashed = best F3 baseline")
+    _save(fig, path)
+
+
+def f4_error_by_class(report: dict, path):
+    """WRMSSE of the model and every baseline: all series, then one panel per demand class."""
+    order, ref = report["setup"]["methods"], report["setup"]["reference_baseline"]
+    panels = [("All series", report["overall"])] + [(c, m) for c, m in report["by_class"].items()]
+    fig, axes = plt.subplots(1, len(panels), figsize=(2.6 * len(panels), 3.6), sharey=True)
+    for ax, (name, m) in zip(axes, panels):
+        _baseline_bars(ax, m, order, ref, labels=F4_SHORT)
+        ax.set_title(f"{name}\n{m[order[0]]['n']:,} series-origins", fontsize=9, color=INK, loc="left")
+        ax.set_xticks([0, 0.5, 1.0])
+    axes[0].text(0, 1.22, "Scaled error of the model and the baselines by demand class (WRMSSE, lower is better)",
+                 transform=axes[0].transAxes, fontsize=11, color=INK)
+    axes[0].text(0, 1.155, "Mean over the 4 backtest origins; dark blue = best in the panel, grey = seasonal "
+                 "naive, dotted line = 1", transform=axes[0].transAxes, fontsize=8, color=MUTED)
+    fig.subplots_adjust(wspace=0.12, top=0.78)
+    _save(fig, path)
+
+
+def f4_feature_importance(report: dict, path):
+    """Share of the total split gain per feature (chosen setting), mean over the origins, with the
+    range over the origins."""
+    imp = report["feature_importance_gain"]
+    feats = [r["feature"] for r in imp][::-1]
+    share = np.array([r["mean_share"] for r in imp][::-1])
+    lo = np.array([min(r["per_origin"].values()) for r in imp][::-1])
+    hi = np.array([max(r["per_origin"].values()) for r in imp][::-1])
+    fig, ax = plt.subplots(figsize=(8, 0.24 * len(feats) + 1.2))
+    bars = ax.barh(feats, share, color=BLUE, height=0.62)
+    ax.hlines(range(len(feats)), lo, hi, color=INK, linewidth=1)
+    for b, v, h in zip(bars, share, hi):
+        ax.text(max(v, h) + 0.004, b.get_y() + b.get_height() / 2, f"{v:.1%}", va="center", fontsize=7, color=INK)
+    ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0))
+    ax.set_xlim(0, hi.max() * 1.15)
+    ax.tick_params(axis="y", labelsize=7.5)
+    _style(ax, grid_axis="x")
+    _title(ax, "What the model uses: share of total split gain per feature",
+           "Chosen setting; bar = mean over the 4 origins, line = lowest to highest origin")
     _save(fig, path)

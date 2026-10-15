@@ -84,3 +84,71 @@ def test_f3_results_are_consistent():
                          columns=["origin", "baseline", "n_days"])
     assert len(ps) == r["setup"]["n_series_origin_pairs"] * len(r["setup"]["baselines"])
     assert (ps["n_days"] >= 1).all() and (ps["n_days"] <= r["setup"]["horizon_days"]).all()
+
+
+def _f4_data():
+    from forecast import model as m
+    data = config.load("data")
+    return m.load_data(ROOT / data["processed_dir"] / data["slice_parquet"], config.load("holdout")["holdout_days"],
+                       config.load("model"), calendar_csv=config.raw_paths(data)["calendar"],
+                       state=config.load("scope")["state"], memory_limit="1GB", threads=2)
+
+
+def test_f4_guard_and_final_recipe_on_the_real_slice():
+    import numpy as np
+    from forecast import model as m
+    d = _f4_data()
+    cfg, bt_cfg = config.load("model"), config.load("backtest")
+    assert d.first_holdout == 1914 and d.panel.last_train == 1913
+    with pytest.raises(m.HoldoutError):
+        m.rows_at(d, 1913, 28, cfg, bt_cfg, with_target=False)       # forecasting the holdout needs the flag
+    X, y, meta = m.training_table(d, 1913, cfg, bt_cfg)                # the final training rows do not
+    assert meta["d_num"].max() == 1913 and np.isfinite(y).all()
+    assert (X.nbytes + y.nbytes) / 1e9 <= m.estimate_table_gb(5748, 28, cfg["training_origins"]["n_origins"],
+                                                              X.shape[1])
+    assert d.cal.loc[1914:1941].shape[0] == 28                          # calendar facts of the holdout days exist
+    assert d.cal.index[d.cal["closed"]].tolist() == [331, 697, 1062, 1427, 1792]   # the 5 Christmas days
+
+
+def test_f4_features_ignore_everything_after_the_origin_on_real_data():
+    import numpy as np
+    from forecast import model as m
+    d = _f4_data()
+    cfg, bt_cfg = config.load("model"), config.load("backtest")
+    X0, _, _ = m.rows_at(d, 1801, 28, cfg, bt_cfg, with_target=False)
+    c = d.panel.col(1802)
+    d.panel.units[:, c:] = 50.0
+    d.panel.price[:, c:] = 0.5
+    d.panel.units[::3, c:c + 10] = np.nan
+    X1, _, _ = m.rows_at(d, 1801, 28, cfg, bt_cfg, with_target=False)
+    np.testing.assert_array_equal(X0, X1)
+
+
+def test_f4_results_are_consistent():
+    import hashlib
+    r = json.loads((ROOT / "results" / "f4_backtest.json").read_text())
+    f3 = json.loads((ROOT / "results" / "f3_backtest.json").read_text())
+    cfg, final = config.load("model"), config.load("model_final")
+    s = r["setup"]
+    assert s["origins"] == f3["setup"]["origins"] and s["first_holdout_d"] == 1914
+    assert s["f3_baselines_match_f3_results"]
+    assert s["n_series_origin_pairs"] == f3["setup"]["n_series_origin_pairs"]
+    for b in s["baselines"]:
+        assert r["overall"][b]["wrmsse"] == pytest.approx(f3["overall"][b]["wrmsse"], abs=1e-12)
+    assert len({m["n"] for m in r["overall"].values()}) == 1          # every method on the same pairs
+    assert len(r["grid"]) == len(cfg["grid"]["settings"]) * len(cfg["grid"]["rounds"])
+    assert r["chosen"]["wrmsse"] == min(g["wrmsse"] for g in r["grid"])
+    assert r["overall"]["lgbm"]["wrmsse"] == pytest.approx(r["chosen"]["wrmsse"], abs=1e-12)
+    for t in r["training_tables"]:
+        assert t["last_target_d"] <= t["origin"] < 1914
+    assert final["chosen_setting"] == r["chosen"]["setting"] and final["rounds"] == r["chosen"]["rounds"]
+    assert final["model_yaml_sha256"] == hashlib.sha256((config.CONFIG_DIR / "model.yaml").read_bytes()).hexdigest()
+    assert final["final_run"]["forecast_origin"] == 1913 and final["final_run"]["forecast_days"] == [1914, 1941]
+    assert not (ROOT / "results" / "f4_holdout.json").exists()        # part B has not been run
+    data = config.load("data")
+    fc = pd.read_parquet(ROOT / data["processed_dir"] / "f4_backtest_forecasts.parquet",
+                         columns=["origin", "method", "d_num", "residual", "forecast", "actual"])
+    assert len(fc) == r["f5_forecasts"]["rows"] == s["n_series_origin_pairs"] * 28 * len(s["methods"])
+    assert fc["d_num"].max() <= 1913
+    ok = fc["actual"].notna()
+    assert (fc.loc[ok, "residual"] - (fc.loc[ok, "actual"] - fc.loc[ok, "forecast"])).abs().max() < 1e-5

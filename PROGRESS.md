@@ -89,3 +89,42 @@ clearly and sit close together; TSB is lowest overall, but the gaps among smooth
 How to run: `.venv/bin/python -m forecast.run_f3` (after run_f1).
 
 Next: F4 (LightGBM global model, tuning on the backtest windows only, then one holdout run).
+
+
+
+## F4 part A: global LightGBM on the backtest, frozen for the holdout (done 2026-10-15)
+
+Built:
+- `config/model.yaml`: rows (series, origin, target day) with horizon as a feature; 26 training
+  origins every 14 days before each backtest origin (target days <= it); features; calendar from
+  calendar.csv; Christmas = closed; Tweedie 1.1; fixed LightGBM params; a 5-setting x 3-checkpoint
+  grid. Each item has a reason. 2 GB cap on the estimated training table.
+- `src/forecast/model.py`: holdout guard (`check_days`, `HoldoutError`, `allow_holdout` flag),
+  calendar features, origin features (days <= t only; last price by F3's last_full_week rule),
+  training / prediction rows, size estimate, fit, forecast, gain importance.
+- `src/forecast/backtest.py`: `evaluate(..., extra=)` scores extra forecasts on exactly F3's series
+  and days; `intermittency_stats` shared with `class_at_origin`. F3 outputs unchanged.
+- `src/forecast/run_f4.py` (`--render` re-renders from saved results), three figures in `plots.py`,
+  `docs/templates/F4_model_backtest.md`.
+- `src/forecast/run_f4_holdout.py` (part B, **not run**): refuses a dirty git tree or an existing
+  `results/f4_holdout.json`, records the commit, checks the frozen model.yaml hash, trains on the
+  final recipe, scores the model and all F3 baselines on d_1914..d_1941.
+- LightGBM 4.7.0 pinned (+ scipy, narwhals); macOS needed `brew install libomp`.
+
+Outputs: `results/f4_backtest.json`, `results/f4_grid.csv`, `results/f4_summary.csv`,
+`docs/figures/f4_*.png`, `docs/F4_model_backtest.md`, `config/model_final.yaml` (generated, frozen).
+For F5 (gitignored): `data/processed/f4_backtest_forecasts.parquet` (forecast, actual, residual per
+series, origin, horizon and method), `data/processed/f4_series_metrics.parquet`.
+
+Result (details and every number in `docs/F4_model_backtest.md`): the model beats the best F3
+baseline (TSB) overall, in every demand class, every department and at all 4 origins; chosen
+setting s1_small (31 leaves, learning rate 0.05, min 100 rows per leaf, 200 trees), at the edge of
+the grid (see NOTES). Grid run about 37 min; peak memory 1.85 GB resident (5.41 GB macOS footprint).
+
+Tests: 27 new unit tests (20 model: guard, hand-computed features, leakage, training targets <= B,
+unlisted/closed targets, calendar, size cap, end-to-end fit, extra-forecast scoring; 7 holdout-script
+guards on throwaway git repos), 3 new real-data checks. Totals: 102 unit, 11 real-data, all pass.
+
+How to run: `.venv/bin/python -m forecast.run_f4` (after run_f1; about 40 min).
+
+Next: review, then F4 part B (`python -m forecast.run_f4_holdout`, once, from the committed tree).
