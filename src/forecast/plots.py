@@ -541,3 +541,28 @@ def f5_sensitivity(report: dict, path):
                  transform=axes[0].transAxes, fontsize=8, color=MUTED)
     fig.subplots_adjust(wspace=0.25, top=0.78)
     _save(fig, path)
+
+
+def f6_summary(holdout: dict, f5: dict, path):
+    """Report summary: holdout WRMSSE (left) and inventory money needed at the central fill rate (right)
+    for the three policies of F5, both read from saved results."""
+    pols, target = f5["policies"], f5["central"]["sl"]
+    ef = next(e for e in f5["holdout"]["equal_fill"]["bias_adjusted"] if abs(e["fill_rate"] - target) < 1e-9)
+    panels = [([holdout["overall"][p]["wrmsse"] for p in pols], "Forecast error on the holdout (WRMSSE)",
+               "{:.3f}", "lower = more accurate"),
+              ([ef["inventory_money"][p] for p in pols], f"Inventory needed for a {target:.0%} fill rate",
+               "${:,.0f}", "simulated under stated assumptions")]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 2.9))
+    names = [F5_LABEL[p] for p in pols][::-1]
+    for ax, (vals, title, fmt, sub) in zip(axes, panels):
+        vals = vals[::-1]
+        ax.barh(names, vals, color=[F5_COLOR[p] for p in pols][::-1], height=0.6)
+        for i, v in enumerate(vals):
+            ax.text(v + max(vals) * 0.02, i, fmt.format(v), va="center", fontsize=8, color=INK)
+        ax.set_xlim(0, max(vals) * 1.22)
+        ax.set_xticks([])
+        _style(ax, grid_axis="x")
+        ax.grid(False)
+        _title(ax, title, sub)
+    fig.subplots_adjust(wspace=0.35, top=0.78)
+    _save(fig, path)
