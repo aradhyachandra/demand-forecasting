@@ -90,6 +90,34 @@
 - **The part A real-data check no longer asserts that the holdout result is missing.** A new check
   ties `results/f4_holdout.json` to commit 1a31ed9 and the frozen `model_final.yaml`.
 
+## Decisions in F5
+
+- **Safety stock from summed-window backtest errors.** Error = actual - forecast summed over every
+  window of protection-period length (lead + review days) inside each 28-day backtest window,
+  overlapping windows pooled over origins, sd with ddof 1. Holdout: origins d_1801..d_1885; the
+  pre-holdout check at d_1885: d_1801..d_1857 only. `spread_from_backtest` refuses any origin whose
+  error days reach the forecast days, and the holdout forecasts are loaded without their residuals.
+- **Bias handled in the main method** (safety stock = mean + z x sd, as suggested); z x sd only is the
+  comparison. Decided before the simulation and kept as the headline even though the comparison did
+  better (see TO VERIFY).
+- **End of horizon: only reviews whose protection period fits.** One forecast of 28 days, so with lead
+  2 and review 7 the reviews are days 1, 8, 15 and the measured days 3-23 (d_1916..d_1936). Days
+  before the first possible delivery are a warm-up. Capping the last forecast sum at day 28 was
+  rejected: it would need a shorter-window spread and would run stock down artificially at the end.
+  The number of reviews and measured days changes with lead time and review period (shown in the
+  sensitivity table); review 14 leaves a single review.
+- **Forecasts are not updated at later reviews** (one origin per window). Stated as a limitation.
+- **Start stock = 1.0 x S of the first review, nothing on order** (0.5 and 1.5 as sensitivity).
+- **Orders and start stock rounded up to whole units**; no case packs, shelf capacity or shelf life.
+- **Units valued at the last known price at the origin** (F3 rule), so no holdout price is used.
+- **Item-stores without any backtest window are left out** (2 on the holdout, 3 at d_1885), counted
+  in the results.
+- **Comparison fill rates fixed in config before the run** (90/95/98%). 98% is not reached by the
+  main-method curves on the holdout within the sweep (up to 99.5% target), so it is reported as n/a.
+- **Ranking is reported two ways:** total cost at the same target (changes in 4 of 20 scenarios,
+  because a fixed target gives the naive policy, with wider errors, more stock and a higher fill
+  rate) and inventory at equal fill rate (model lowest in all 20). The second is the like-for-like one.
+
 ## TO VERIFY
 
 - **Holdout dates:** the final holdout is d_1914 to d_1941 (2016-04-25 to 2016-05-22), the last 28 days
@@ -138,3 +166,20 @@
 - **Price features carry little gain (about 0.2% together).** That fits F2 (M5 prices only change
   with sales, and only the last full week's price may be used). Do not write "price does not matter"
   in the report; the model just cannot see future price cuts.
+- **Cost and lead-time assumptions (F5) are judgement calls:** 25% of price per year holding cost,
+  lost unit = 25% of price (grocery gross-margin proxy), lead time 2 days, weekly review. None are in
+  the data; check against published grocery margins / supply-chain sources before quoting money
+  figures in the report, and always quote them with the sensitivity range.
+- **Achieved cycle service level is about 3 points below target (F5)** for every policy (e.g. 92% at
+  a 95% target). Likely causes: skewed (non-normal) summed errors of intermittent items and spreads
+  estimated from only 3-4 backtest windows. An empirical quantile of the summed errors instead of the
+  normal z is a possible improvement, to be decided on the backtest windows only.
+- **Bias-adjusted safety stock did worse than z x sd only (F5)**, on the holdout and on the
+  pre-holdout check: it needs more stock for the same fill rate. Probably the per-series mean error
+  from a few windows is noise. A pooled (class- or slice-level) or shrunk bias term could be tested,
+  deciding on the d_1885 check (pre-holdout) only, not on the holdout.
+- **Lost-sales concentration (F5):** the top 10% of item-stores carry over 90% of lost-sales cost,
+  partly by construction (fewer than 20% of item-stores lose any sale in 21 days). Check that this is
+  not driven by a few items with single large-order days before calling it a finding.
+- **Sales are not demand (F5):** M5 records sales; on days the real shelf was empty, demand was
+  higher. The simulation treats sales as demand.

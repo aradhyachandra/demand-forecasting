@@ -390,3 +390,154 @@ def f4_holdout_vs_backtest(holdout: dict, backtest: dict, path):
     _title(ax, "Holdout vs backtest: scaled error per method",
            "Revenue-weighted scaled error per method; text = holdout (backtest)")
     _save(fig, path)
+
+
+# --- F5 -----------------------------------------------------------------------------------------
+
+F5_COLOR = {"seasonal_naive": GRAY, "tsb": ORANGE, "lgbm": BLUE}
+F5_LABEL = {"seasonal_naive": "Seasonal naive", "tsb": "TSB", "lgbm": "LightGBM"}
+F5_ASSUMPTION = {"lead_time_days": "Lead time (days)", "review_period_days": "Review period (days)",
+                 "starting_inventory_factor": "Starting stock (x S)", "unmet_demand": "Unmet demand",
+                 "holding_cost_rate_per_year": "Holding cost (share/yr)",
+                 "stockout_cost_share_of_price": "Lost-sale cost (share of price)"}
+
+
+def _k(ax):
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"${v / 1000:,.0f}k"))
+
+
+def f5_tradeoff(report: dict, path):
+    """Average inventory money vs fill rate over the service-level sweep, one line per policy:
+    holdout and the pre-holdout robustness window side by side. Solid = main safety stock (bias
+    adjusted), dashed = z x sd only; big dot = the central target."""
+    windows = [("holdout", "Holdout (forecast from d_1913)"),
+               ("robustness", f"Pre-holdout check (forecast from d_{report['robustness']['setup']['forecast_origin']})")]
+    target = report["central"]["sl"]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), sharey=True)
+    for ax, (w, name) in zip(axes, windows):
+        sw = pd.DataFrame(report[w]["sweep"])
+        for pol in report["policies"]:
+            for method, ls, lw in (("bias_adjusted", "-", 2), ("z_sd_only", "--", 1.2)):
+                g = sw[(sw["policy"] == pol) & (sw["ss_method"] == method)].sort_values("service_level")
+                ax.plot(g["fill_rate"], g["avg_inv_money"], ls, color=F5_COLOR[pol], linewidth=lw,
+                        marker="o" if method == "bias_adjusted" else None, markersize=4,
+                        markeredgecolor="white", markeredgewidth=1)
+                if method == "bias_adjusted":
+                    c = g[np.isclose(g["service_level"], target)].iloc[0]
+                    ax.scatter(c["fill_rate"], c["avg_inv_money"], s=70, color=F5_COLOR[pol], zorder=4,
+                               edgecolors="white", linewidths=2)
+                    last = g.iloc[-1]
+                    ax.text(last["fill_rate"] + 0.002, last["avg_inv_money"], F5_LABEL[pol], fontsize=8,
+                            color=INK, va="center")
+        for f in report["compare_fill_rates"]:
+            ax.axvline(f, color=MUTED, linewidth=0.8, linestyle=":")
+        ax.set_xlabel("Fill rate (units served / units demanded)", fontsize=8.5, color=INK)
+        ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0, decimals=0))
+        ax.set_xlim(right=ax.get_xlim()[1] + 0.03)
+        _k(ax)
+        _style(ax)
+        ax.set_title(name, fontsize=9, color=INK, loc="left")
+    axes[0].set_ylabel("Average inventory (money at last known price)", fontsize=8.5, color=INK)
+    axes[0].text(0, 1.16, "Inventory needed for each fill rate, per policy (lower = less stock for the same service)",
+                 transform=axes[0].transAxes, fontsize=11, color=INK)
+    axes[0].text(0, 1.09, f"Target service level swept {min(report['service_level_sweep']):.0%}-"
+                 f"{max(report['service_level_sweep']):.1%}; big dot = {target:.0%} target; solid = mean + z x sd, "
+                 "dashed = z x sd only; dotted = comparison fill rates", transform=axes[0].transAxes, fontsize=8,
+                 color=MUTED)
+    fig.subplots_adjust(wspace=0.08, top=0.82)
+    _save(fig, path)
+
+
+def f5_cost_breakdown(report: dict, path):
+    """Holding vs lost-sales cost per policy at the central scenario, both safety-stock methods."""
+    pols = report["policies"]
+    fig, axes = plt.subplots(2, 1, figsize=(8, 4.6), sharex=True)
+    for ax, (method, name) in zip(axes, (("bias_adjusted", "Main: mean + z x sd"), ("z_sd_only", "Comparison: z x sd only"))):
+        main = report["holdout"]["main"][method]
+        y = np.arange(len(pols))[::-1]
+        hold = np.array([main[p]["overall"]["holding_cost"] for p in pols])
+        lost = np.array([main[p]["overall"]["lost_cost"] for p in pols])
+        ax.barh(y, hold, color=BLUE_LIGHT, height=0.6, label="Holding cost", edgecolor="white", linewidth=2)
+        ax.barh(y, lost, left=hold, color="#f4b393", height=0.6, label="Lost-sales cost", edgecolor="white", linewidth=2)
+        for yy, h, l in zip(y, hold, lost):
+            ax.text(h + l + 200, yy, f"${h + l:,.0f}  (holding ${h:,.0f} + lost sales ${l:,.0f})", va="center",
+                    fontsize=7.5, color=INK)
+        ax.set_yticks(y, [F5_LABEL[p] for p in pols])
+        ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5000))
+        ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"${v / 1000:,.0f}k"))
+        _style(ax, grid_axis="x")
+        ax.set_title(name, fontsize=9, color=INK, loc="left")
+    axes[0].set_xlim(0, max(report["holdout"]["main"][m][p]["overall"]["total_cost"]
+                            for m in ("bias_adjusted", "z_sd_only") for p in pols) * 1.8)
+    axes[1].legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=2, frameon=False, fontsize=8)
+    s = report["holdout"]["setup"]
+    axes[0].text(0, 1.32, "Simulated cost per policy on the holdout, central assumptions", transform=axes[0].transAxes,
+                 fontsize=11, color=INK)
+    axes[0].text(0, 1.2, f"{report['central']['sl']:.0%} target; {s['measured_days']} measured days "
+                 f"(d_{s['measured_d'][0]}-d_{s['measured_d'][1]}); all {s['n_simulated']:,} item-stores",
+                 transform=axes[0].transAxes, fontsize=8, color=MUTED)
+    fig.subplots_adjust(hspace=0.45, top=0.84)
+    _save(fig, path)
+
+
+def f5_fill_by_class(report: dict, path):
+    """Fill rate per demand class and policy at the central scenario (dots, so the axis can start
+    above 0 without distorting bar lengths)."""
+    main = report["holdout"]["main"]["bias_adjusted"]
+    pols = report["policies"]
+    groups = list(main[pols[0]]["by_class"]) + ["all"]
+    fig, ax = plt.subplots(figsize=(8, 3.3))
+    for i, g in enumerate(groups[::-1]):
+        vals = [(main[p]["overall"] if g == "all" else main[p]["by_class"][g])["fill_rate"] for p in pols]
+        ax.hlines(i, min(vals), max(vals), color=GRID, linewidth=3)
+        for k, (p, v) in enumerate(zip(pols, vals)):
+            ax.scatter(v, i + (k - 1) * 0.12, s=46, color=F5_COLOR[p], zorder=3, edgecolors="white", linewidths=1.5,
+                       label=F5_LABEL[p] if i == 0 else None)
+        ax.text(max(vals) + 0.003, i, " · ".join(f"{F5_LABEL[p]} {v:.1%}" for p, v in zip(pols, vals)),
+                va="center", fontsize=7, color=INK)
+    n = {g: main[pols[0]]["by_class"][g]["n_series"] for g in groups[:-1]}
+    ax.set_yticks(range(len(groups)), [f"{g} ({n[g]:,})" if g in n else "all series" for g in groups][::-1])
+    ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0, decimals=0))
+    lo = min((main[p]["overall"] if g == "all" else main[p]["by_class"][g])["fill_rate"] for p in pols for g in groups)
+    ax.set_xlim(lo - 0.01, 1.07)
+    ax.set_xticks([t for t in np.arange(np.floor(lo * 50) / 50, 1.0001, 0.02)])
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=3, frameon=False, fontsize=8)
+    _style(ax, grid_axis="x")
+    _title(ax, "Fill rate by demand class on the holdout, central scenario",
+           f"{report['central']['sl']:.0%} target, safety stock = mean + z x sd; class at d_1913 (series in brackets)")
+    _save(fig, path)
+
+
+def f5_sensitivity(report: dict, path):
+    """For each assumption over its range: inventory money the model needs at the middle comparison
+    fill rate, relative to TSB and to seasonal naive (negative = the model needs less)."""
+    f = report["compare_fill_rates"][len(report["compare_fill_rates"]) // 2]
+    checks = report["sensitivity_checks"]
+    keys = list(dict.fromkeys(c["assumption"] for c in checks))
+    fig, axes = plt.subplots(1, len(keys), figsize=(2.0 * len(keys), 3.3), sharey=True)
+    for ax, key in zip(axes, keys):
+        cs = [c for c in checks if c["assumption"] == key]
+        x = np.arange(len(cs))
+        for ref in ("tsb", "seasonal_naive"):
+            ys = [next(e for e in c["equal_fill"] if np.isclose(e["fill_rate"], f)).get(f"lgbm_vs_{ref}_pct", np.nan)
+                  for c in cs]
+            ax.plot(x, ys, "-o", color=F5_COLOR[ref], markersize=5, markeredgecolor="white", linewidth=1.6,
+                    label=f"vs {F5_LABEL[ref]}" if key == keys[0] else None)
+        for xi, c in zip(x, cs):
+            if c["is_central"]:
+                ax.axvspan(xi - 0.3, xi + 0.3, color=GRID, zorder=0)
+        ax.axhline(0, color=MUTED, linewidth=0.8)
+        ax.set_xticks(x, [str(c["value"]).replace("_", "\n") for c in cs], fontsize=7)
+        ax.set_xlim(-0.5, len(cs) - 0.5)
+        ax.set_title(F5_ASSUMPTION[key], fontsize=8, color=INK, loc="left")
+        _style(ax)
+    axes[0].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(100, decimals=0))
+    axes[0].set_ylabel(f"Model inventory vs other policy at {f:.0%} fill rate", fontsize=8, color=INK)
+    axes[0].legend(loc="upper center", bbox_to_anchor=(len(keys) / 2, -0.14), ncol=2, frameon=False, fontsize=8)
+    axes[0].text(0, 1.2, "Does the model's advantage survive each assumption's range?", transform=axes[0].transAxes,
+                 fontsize=11, color=INK)
+    axes[0].text(0, 1.12, "Below 0 = the model needs less inventory for the same fill rate; shaded = central value; "
+                 "one assumption changed at a time (cost rates do not change stock, so their lines are flat)",
+                 transform=axes[0].transAxes, fontsize=8, color=MUTED)
+    fig.subplots_adjust(wspace=0.25, top=0.78)
+    _save(fig, path)

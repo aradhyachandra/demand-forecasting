@@ -163,3 +163,49 @@ def test_f4_holdout_result_is_consistent():
         (ROOT / "results" / "f4_backtest.json").read_text())["best_baseline"]["name"]
     assert len({m["n"] for m in r["overall"].values()}) == 1          # every method on the same series
     assert r["coverage"][0]["n_scored"] == r["overall"]["lgbm"]["n"]
+
+
+def test_f5_spreads_come_from_backtest_origins_only():
+    r = json.loads((ROOT / "results" / "f5_inventory.json").read_text())
+    h, rb = r["holdout"]["setup"], r["robustness"]["setup"]
+    assert h["forecast_origin"] == 1913 and h["spread_origins"] == [1801, 1829, 1857, 1885]
+    assert rb["forecast_origin"] == 1885 and rb["spread_origins"] == [1801, 1829, 1857]
+    for s in (h, rb):
+        assert max(s["spread_origins"]) + 28 <= s["forecast_origin"]      # error days end by the forecast origin
+        assert s["n_simulated"] + s["n_excluded_no_backtest"] == s["n_series"]
+        assert s["measured_d"][0] > s["forecast_origin"] and s["measured_d"][1] <= s["forecast_origin"] + 28
+
+
+def test_f5_holdout_errors_cannot_change_the_safety_stock_on_real_data():
+    import numpy as np
+    from forecast import inventory as inv, run_f5
+
+    processed = ROOT / "data" / "processed"
+    w = run_f5.load_window(processed / "f4_holdout_forecasts.parquet", ["lgbm"], 1913, 28)
+    bt_err = run_f5.load_backtest_errors(processed / "f4_backtest_forecasts.parquet", ["lgbm"], [1801, 1829, 1857, 1885])
+    hold = pd.read_parquet(processed / "f4_holdout_forecasts.parquet", columns=["id", "origin", "h", "method", "residual"])
+    hold = hold[hold["method"] == "lgbm"]
+    args = ("lgbm", w.ids, 9, [1801, 1829, 1857, 1885])
+    a = inv.spread_from_backtest(bt_err, *args, forecast_origin=1913, horizon=28)
+    b = inv.spread_from_backtest(pd.concat([bt_err, hold.assign(residual=hold["residual"] * 100)]), *args,
+                                 forecast_origin=1913, horizon=28)
+    for x, y in zip(a, b):
+        np.testing.assert_array_equal(x, y)
+
+
+def test_f5_results_are_consistent():
+    r = json.loads((ROOT / "results" / "f5_inventory.json").read_text())
+    for w in ("holdout", "robustness"):
+        for method, by_pol in r[w]["main"].items():
+            for o in (g["overall"] for g in by_pol.values()):
+                assert 0 < o["fill_rate"] <= 1 and 0 < o["cycle_service_level"] <= 1
+                assert abs(o["total_cost"] - o["holding_cost"] - o["lost_cost"]) < 1e-6
+                assert abs(o["served"] + o["lost"] - o["demand"]) < 1e-6
+        sw = pd.DataFrame(r[w]["sweep"])
+        for _, g in sw.groupby(["policy", "ss_method"]):   # more safety stock never lowers stock or fill rate
+            g = g.sort_values("service_level")
+            assert g["avg_inv_money"].is_monotonic_increasing and g["fill_rate"].is_monotonic_increasing
+    # the doc is exactly what the saved results render to
+    from forecast import render_f5
+    doc = (ROOT / "docs" / "templates" / "F5_inventory.md").read_text().format(**render_f5.values(r))
+    assert doc == (ROOT / "docs" / "F5_inventory.md").read_text()
