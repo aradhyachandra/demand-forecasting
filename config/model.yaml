@@ -1,0 +1,111 @@
+# F4 (global LightGBM) settings. Each choice has a one-line reason.
+# The backtest origins, eligibility, metrics, revenue weights and class labels are F3's
+# (config/backtest.yaml); this file only adds what the model needs. The holdout is never read here.
+
+# --- what one row is ----------------------------------------------------------------------------
+# One row = (series, training origin t, target day t + h), h = 1..horizon_days (from backtest.yaml).
+# Features use days <= t only, plus calendar facts of the target day that are known in advance.
+# One model per backtest origin B, trained on rows whose target days are <= B (direct multi-horizon:
+# h is a feature; no recursive forecasting, so an error on day 1 never feeds day 2).
+
+training_origins:
+  step_days: 14
+  step_reason: >-
+    Every 14 days keeps each training origin on the same weekday as the backtest origins (which are
+    28 days apart, and so is the final origin d_1913), so horizon h always maps to the same weekday
+    as in the forecasts being scored; 14 rather than 7 halves the table size.
+  n_origins: 26
+  n_origins_reason: >-
+    26 x 14 days = one year of origins before each backtest origin, so every month, holiday and
+    season appears once in the training targets; a second year doubles memory and run time for
+    rows that are further from the forecast period.
+  latest_gap_days: 28   # reason: the newest training origin is B - 28, so its last target day is B itself; no target after B
+
+max_feature_table_gb: 2.0   # reason: 8 GB laptop; the estimate (rows x columns x 4 bytes) is checked before building, and the run stops above this
+
+# --- features as of the origin t (listed days only; unlisted = not on sale, never zero) ----------
+features:
+  mean_days: [7, 28, 56, 112]
+  mean_reason: >-
+    Mean units over the listed days among the last 7/28/56/112 calendar days: one week (latest
+    level), four weeks (the moving-average baseline), and two longer windows for slow sellers and
+    the trend between them. NaN if none of those days was listed.
+  weekday_mean_weeks: [4, 12]
+  weekday_mean_reason: >-
+    Mean units on the target day's weekday over the last 4 and 12 weeks (listed days only). The
+    weekly cycle is the strongest regular pattern (F2), and an item's own weekday shape can differ
+    from the slice's.
+  zero_share_days: 112   # reason: share of listed days with no sale over the longest mean window (16 weeks); a direct intermittency signal
+  # days since last sale: t minus the last listed day with a sale (NaN if never sold); reason: TSB-style "has it gone quiet" signal
+  # listed days so far: reason: newly listed items behave differently (launch ramp) and have noisier means
+  # ADI and CV² from all listed days <= t (F2/F3 definitions, demand_patterns.classify); reason: the class signals as numbers
+  price_ref_days: 364
+  price_reason: >-
+    Last known price = F3's last_full_week rule (the price of the last full Saturday-Friday week
+    ended by t), never a target-day or future weekly price, because M5 prices change only in weeks
+    with sales (F2). The ratio to the item's own mean listed price over the 364 days up to that
+    week shows whether the item is on a price cut relative to its usual price.
+  categoricals: [item_id, dept_id, store_id]   # reason: one global model; the codes let it learn item and store levels that the means smooth over
+
+# --- calendar facts of the target day (all known in advance) -------------------------------------
+calendar:
+  source: calendar.csv
+  source_reason: >-
+    The raw calendar (dates, events, SNAP) is published in advance and has no sales, so reading the
+    rows for later dates (to find the next event) does not read the holdout. Only event_name_1 /
+    event_type_1 are used; the 5 days with a second event in the training years keep the first.
+  features: [wday, month, mday, snap, event_name, event_type, days_to_event]
+  event_distance_cap_days: 30   # reason: the signed distance to the nearest event day (positive = event ahead) is cut at +-30; further away it is "no event nearby"
+
+closed_events: [Christmas]
+closed_reason: >-
+  Stores are (almost) closed on Christmas (F2: 5-8 units a day in the whole slice vs thousands on
+  other days; TO VERIFY in NOTES). Christmas target days are dropped from training, forecast as 0,
+  and Christmas history days are treated like unlisted days in the features, so one closed day does
+  not drag the recent means down (F3's first window under-forecast after Christmas).
+
+# --- the model ----------------------------------------------------------------------------------
+objective: tweedie
+tweedie_variance_power: 1.1
+objective_reason: >-
+  Daily unit sales are non-negative counts with many zeros and a long right tail. Tweedie with a
+  power just above 1 is a Poisson-like loss with extra room for the zero mass and over-dispersion,
+  and predicts the mean (what RMSSE rewards). It was the usual choice in the M5 top solutions;
+  plain Poisson is the fallback if it misbehaves. Not tuned, to keep the grid small.
+
+fixed_params:
+  feature_fraction: 0.8   # reason: each tree sees 80% of the features; standard regularisation, a little faster
+  bagging_fraction: 0.8   # reason: each tree sees 80% of the rows; standard regularisation, faster on millions of rows
+  bagging_freq: 1         # reason: resample rows every round (needed for bagging_fraction to act)
+  max_bin: 255            # reason: LightGBM default; enough resolution for unit means and prices
+  seed: 2016              # reason: fixed seed, so re-runs give the same model
+  deterministic: true     # reason: identical results on re-runs (with force_col_wise)
+  force_col_wise: true    # reason: required for deterministic multi-threaded training; also avoids the auto-choice warning
+  num_threads: 8          # reason: this Mac has 8 cores; results do not depend on it with deterministic = true
+  verbosity: -1           # reason: quiet logs
+
+sample_weight: none
+sample_weight_reason: >-
+  Rows are not weighted by revenue / scale (the WRMSSE weights). Kept simple for the first model;
+  the squared-error-like loss already gives big sellers more pull. A candidate for later, decided
+  on the backtest only.
+
+# --- tuning (backtest origins only; the holdout is never read) -----------------------------------
+# Each setting is trained once per backtest origin with max(rounds) trees and scored after each
+# number in `rounds` (the first n trees of a deterministic run are the n-tree model), so the grid is
+# settings x rounds. The winner has the lowest WRMSSE averaged over the 4 F3 origins.
+grid:
+  rounds: [200, 400, 800]
+  rounds_reason: doubling steps from a short to a long run; with learning rates 0.03-0.1 this spans under- to well-fitted
+  settings:
+    - {name: s1_small,    num_leaves: 31,  learning_rate: 0.05, min_data_in_leaf: 100}
+    - {name: s2_medium,   num_leaves: 127, learning_rate: 0.05, min_data_in_leaf: 100}
+    - {name: s3_medium_minleaf, num_leaves: 127, learning_rate: 0.05, min_data_in_leaf: 1000}
+    - {name: s4_large_slow, num_leaves: 255, learning_rate: 0.03, min_data_in_leaf: 500}
+    - {name: s5_fast,     num_leaves: 63,  learning_rate: 0.1,  min_data_in_leaf: 200}
+  settings_reason: >-
+    A handful of settings around common LightGBM choices for M5-sized tables: tree size (31-255
+    leaves), learning rate (0.03-0.1) and minimum rows per leaf (100-1000, the main guard against
+    fitting single noisy items). Kept small so the 4-origin backtest runs in under an hour.
+
+model_name: lgbm   # reason: the label used in results next to the F3 baseline names
