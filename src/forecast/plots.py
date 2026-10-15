@@ -366,3 +366,27 @@ def f4_feature_importance(report: dict, path):
     _title(ax, "What the model uses: share of total split gain per feature",
            "Chosen setting; bar = mean over the 4 origins, line = lowest to highest origin")
     _save(fig, path)
+
+
+def f4_holdout_vs_backtest(holdout: dict, backtest: dict, path):
+    """WRMSSE per method: backtest mean over the 4 origins (light dot) and the one-shot holdout
+    (dark dot), joined by a line."""
+    order = holdout["setup"]["methods"]
+    fig, ax = plt.subplots(figsize=(8, 3.8))
+    for i, m in enumerate(order[::-1]):
+        b, h = backtest["overall"][m]["wrmsse"], holdout["overall"][m]["wrmsse"]
+        ax.hlines(i, min(b, h), max(b, h), color=GRID, linewidth=3)
+        ax.scatter(b, i, s=40, color=BLUE_LIGHT, zorder=3, edgecolors="white", linewidths=1.5,
+                   label="Backtest (mean of 4 origins)" if i == 0 else None)
+        ax.scatter(h, i, s=48, color=BLUE, zorder=3, edgecolors="white", linewidths=1.5,
+                   label="Holdout (one run)" if i == 0 else None)
+        ax.text(max(b, h) + 0.012, i, f"{h:.3f}  (backtest {b:.3f})", va="center", fontsize=7.5, color=INK)
+    ax.set_yticks(range(len(order)), [F4_SHORT[m] for m in order[::-1]])
+    vals = [d["overall"][m]["wrmsse"] for d in (holdout, backtest) for m in order]
+    ax.set_xlim(min(vals) - 0.04, max(vals) + 0.2)
+    ax.set_xlabel("WRMSSE (lower is better)", fontsize=8.5, color=INK)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=2, frameon=False, fontsize=8)
+    _style(ax, grid_axis="x")
+    _title(ax, "Holdout vs backtest: scaled error per method",
+           "Revenue-weighted scaled error per method; text = holdout (backtest)")
+    _save(fig, path)

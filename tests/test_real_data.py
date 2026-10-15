@@ -144,7 +144,6 @@ def test_f4_results_are_consistent():
     assert final["chosen_setting"] == r["chosen"]["setting"] and final["rounds"] == r["chosen"]["rounds"]
     assert final["model_yaml_sha256"] == hashlib.sha256((config.CONFIG_DIR / "model.yaml").read_bytes()).hexdigest()
     assert final["final_run"]["forecast_origin"] == 1913 and final["final_run"]["forecast_days"] == [1914, 1941]
-    assert not (ROOT / "results" / "f4_holdout.json").exists()        # part B has not been run
     data = config.load("data")
     fc = pd.read_parquet(ROOT / data["processed_dir"] / "f4_backtest_forecasts.parquet",
                          columns=["origin", "method", "d_num", "residual", "forecast", "actual"])
@@ -152,3 +151,15 @@ def test_f4_results_are_consistent():
     assert fc["d_num"].max() <= 1913
     ok = fc["actual"].notna()
     assert (fc.loc[ok, "residual"] - (fc.loc[ok, "actual"] - fc.loc[ok, "forecast"])).abs().max() < 1e-5
+
+
+def test_f4_holdout_result_is_consistent():
+    r = json.loads((ROOT / "results" / "f4_holdout.json").read_text())
+    final = config.load("model_final")
+    assert r["commit"].startswith("1a31ed9")                          # the frozen part-A commit
+    assert r["model_final"] == final                                  # scored with the frozen settings
+    assert r["setup"]["holdout_days"] == [1914, 1941] and r["setup"]["forecast_origin"] == 1913
+    assert r["setup"]["best_baseline_from_backtest"] == json.loads(
+        (ROOT / "results" / "f4_backtest.json").read_text())["best_baseline"]["name"]
+    assert len({m["n"] for m in r["overall"].values()}) == 1          # every method on the same series
+    assert r["coverage"][0]["n_scored"] == r["overall"]["lgbm"]["n"]
