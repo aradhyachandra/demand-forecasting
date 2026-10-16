@@ -149,6 +149,11 @@
   `git clone` inside the temp folder (not a worktree of the real repo); its JSON matched the committed
   one except run-time fields, and its forecasts parquet was byte-identical. Nothing was changed because
   of it. README step 4 documents the same procedure. Details: `docs/F6_reproducibility.md`.
+- **Pure clean-clone check (2026-10-16):** repeated on a plain `git clone` of the pushed a831acc from
+  GitHub with nothing copied over it, compared against that commit's own files. Same outcome as the
+  overlay check (only run-time fields and the F4 run-time paragraph differ). `results/f6_clean_clone_check.json`
+  now holds `pure_clone` and, as history, `overlay_check_2026_10_15`. A first attempt was stopped
+  mid-F4 when the session ended and was discarded.
 - **Not run in the working copy:** `forecast.run_f4_holdout`.
 - **README screenshot (`docs/figures/f6_dashboard_portfolio.png`, 2026-10-16):** the Portfolio view
   only, captured with headless Chrome (Playwright, from a throwaway scratch venv, not a project
