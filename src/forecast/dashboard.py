@@ -6,7 +6,7 @@ results/ and data/processed/ and, for one item at a time, replays the tested F5 
   (f4_backtest_forecasts.parquet, origins before the holdout only).
 - Inventory view: selects rows of the pre-computed F5 scenarios (results/f5_*.csv, f5_inventory.json).
 - Portfolio view: where lost sales and inventory sit (results/f5_inventory.json).
-Every inventory number is a simulated outcome under stated assumptions, not an observed saving.
+Every inventory number is a simulated outcome under stated assumptions, not an observed result.
 """
 from __future__ import annotations
 

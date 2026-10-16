@@ -3,7 +3,7 @@
 Reads results/ (committed aggregates) and data/processed/ (built locally from your own Kaggle download;
 the M5 data may not be redistributed). Nothing is refitted. The inventory views select pre-computed F5
 scenarios; the single-item replay calls the tested F5 simulation functions. Every inventory and money
-figure is a SIMULATED OUTCOME UNDER STATED ASSUMPTIONS, not an observed saving.
+figure is a SIMULATED OUTCOME UNDER STATED ASSUMPTIONS, not an observed result.
 """
 import os
 import sys
@@ -60,7 +60,7 @@ st.title("Demand forecasting and inventory")
 st.caption(f"Walmart M5 data, California FOODS ({setup['n_series']:,} item-stores). One 28-day holdout "
            f"(d_{setup['forecast_days'][0]}..d_{setup['forecast_days'][1]}) forecast once from d_{origin} by the "
            "frozen model. Inventory figures are simulated outcomes under stated assumptions "
-           "(config/inventory.yaml), not observed savings. Full write-up: docs/REPORT.md.")
+           "(config/inventory.yaml), not observed results. Full write-up: docs/REPORT.md.")
 
 product_tab, inventory_tab, portfolio_tab = st.tabs(["Product", "Inventory scenarios", "Portfolio"])
 
@@ -117,7 +117,9 @@ with product_tab:
                      alt.Tooltip("value:Q", title="Units", format=".2f")])
         origin_rule = alt.Chart(pd.DataFrame({"x": [origin + 0.5]})).mark_rule(strokeDash=[4, 4]).encode(x="x:Q")
         st.altair_chart(band + chart + origin_rule, width="stretch")
-        st.caption(f"{sid} ({row['demand_class']} at the origin). Gaps in the history = days before the item's first week with a sale. The shaded "
+        st.caption(f"{sid} ({row['demand_class']} at the origin). History starts at the item's first week "
+                   "with a sale. Earlier days are not shown: the data can't tell 'not yet on sale' from "
+                   "'on the shelf but unsold'. The shaded "
                    f"band is the {band_method} forecast plus the 10th to 90th percentile of this item's daily "
                    f"backtest errors (origins {', '.join(f'd_{o}' for o in spread_origins)}): a rough picture "
                    "of past error, not a calibrated interval. Holdout actuals are shown after the fact.")

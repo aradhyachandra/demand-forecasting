@@ -219,6 +219,10 @@ Tests: 36 new unit tests (report rendering 7, compare tool 3, dashboard 13, run_
 2, write-up renderer 3), 3 new real-data checks (single-item replay = F5 run, app on real data, report
 and README = rendered). Totals: 176 unit, 18 real-data.
 
+2026-10-16: dashboard caption reworded (history starts at the item's first week with a sale), header
+wording fixed ("not observed results"), a wording test for the app added (177 unit tests), and a
+Portfolio-view screenshot (aggregates only) added to the README.
+
 All milestones (F1-F6) are done.
 
 ### Reproduce end to end

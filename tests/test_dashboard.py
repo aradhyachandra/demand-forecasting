@@ -182,3 +182,10 @@ def test_app_inventory_controls_select_saved_scenarios(tmp_path, monkeypatch):
     r = dash.load_results(ROOT)
     expected = dash.sweep_rows(r["sweep"], 0.9, "bias_adjusted").set_index("policy").loc["lgbm", "fill_rate"]
     assert f"{expected:.1%}" in " ".join(str(m.value) for m in at.metric)
+
+
+def test_dashboard_wording_rules():
+    import re
+    text = APP.read_text(encoding="utf-8")
+    assert not re.search(r"\bsavings?\b", text, re.I), "inventory results are simulated outcomes, not savings"
+    assert not re.search(r"\bcaused?\b|\bcauses\b", text, re.I), "drivers are associations"

@@ -63,6 +63,15 @@ flowchart LR
 | F5 Inventory | `src/forecast/run_f5.py` | [docs/F5_inventory.md](docs/F5_inventory.md) |
 | F6 Report, dashboard, check | `src/forecast/run_f6.py`, `app/streamlit_app.py` | [docs/REPORT.md](docs/REPORT.md), [docs/F6_reproducibility.md](docs/F6_reproducibility.md) |
 
+## Dashboard
+
+`streamlit run app/streamlit_app.py` opens three views: **Product** (one item's history, holdout
+actuals, the model and baseline forecasts with a band from its backtest errors; needs your own
+Kaggle download), **Inventory scenarios** (pick among the pre-computed F5 scenarios, or replay one item
+live) and **Portfolio**, shown here. It shows aggregates from `results/` only:
+
+![Dashboard, Portfolio view](docs/figures/f6_dashboard_portfolio.png)
+
 ## Reproduce
 
 Python 3.13; the full run was checked on an 8 GB MacBook (see
