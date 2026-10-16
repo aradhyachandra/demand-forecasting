@@ -70,15 +70,27 @@ def context(rec: dict) -> tuple[dict, dict]:
         "holdout_differing": ", ".join(hr["comparison"].get("differing_paths", [])) or "none",
         "unit_passed": rec["tests"]["unit"]["passed"], "unit_failed": rec["tests"]["unit"]["failed"],
         "real_passed": rec["tests"]["realdata"]["passed"], "real_failed": rec["tests"]["realdata"]["failed"],
-        "overlay_n": len(rec["clone"]["overlay_files"]),
-        "overlay_list": ", ".join(f"`{f}`" for f in rec["clone"]["overlay_files"]),
+        "overlay_n": len(rec["clone"].get("overlay_files", [])),
+        "overlay_list": ", ".join(f"`{f}`" for f in rec["clone"].get("overlay_files", [])) or "none",
     }}
     return ctx, tables
 
 
+CHECKS = {"p": "pure_clone", "o": "overlay_check_2026_10_15"}   # placeholder prefix -> record key
+
+
 def render(record: Path = RECORD, template: Path = TEMPLATE) -> str:
+    """One record, or several under CHECKS keys: then {{p.t.x}} / {{table:p_name}} address the pure
+    clone and {{o.t.x}} / {{table:o_name}} the earlier overlay check."""
     rec = json.loads(Path(record).read_text(encoding="utf-8"))
-    ctx, tables = context(rec)
+    if not any(k in rec for k in CHECKS.values()):
+        ctx, tables = context(rec)
+    else:
+        ctx, tables = {}, {}
+        for prefix, key in CHECKS.items():
+            c, t = context(rec[key])
+            ctx[prefix] = c
+            tables.update({f"{prefix}_{k}": v for k, v in t.items()})
     return render_template(Path(template).read_text(encoding="utf-8"), ctx, tables)
 
 

@@ -223,6 +223,14 @@ and README = rendered). Totals: 176 unit, 18 real-data.
 wording fixed ("not observed results"), a wording test for the app added (177 unit tests), and a
 Portfolio-view screenshot (aggregates only) added to the README.
 
+Pure clean-clone check (2026-10-16, `docs/F6_reproducibility.md`): `git clone` of the pushed HEAD
+a831acc from GitHub, no overlay, fresh venv, full pipeline including the separate-clone 1a31ed9
+holdout re-run. 61 of 62 compared files match (60 byte-identical; results/f4_backtest.json differs only
+in run-time fields); the one other file is the run-time paragraph of docs/F4_model_backtest.md. The
+holdout re-run matched results/f4_holdout.json (run-time fields aside) with a byte-identical forecasts
+parquet. 177 unit and 18 real-data tests pass in the clone. The overlay check of 2026-10-15 is kept in
+the same record as history.
+
 All milestones (F1-F6) are done.
 
 ### Reproduce end to end

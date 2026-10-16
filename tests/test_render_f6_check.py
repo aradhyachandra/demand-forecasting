@@ -46,3 +46,15 @@ def test_render_unknown_placeholder_fails(tmp_path):
     tpl.write_text("{{t.nope}}")
     with pytest.raises(KeyError):
         r6.render(rec, tpl)
+
+
+def test_render_pure_and_overlay_records_side_by_side(tmp_path):
+    rec, tpl = tmp_path / "r.json", tmp_path / "t.md"
+    pure = record()
+    del pure["clone"]["overlay_files"]
+    pure["tests"]["unit"]["passed"] = 11
+    rec.write_text(json.dumps({"pure_clone": pure, "overlay_check_2026_10_15": record()}))
+    tpl.write_text("pure {{p.t.unit_passed}} overlay {{o.t.unit_passed}} {{p.t.overlay_list}}\n{{table:o_raw}}")
+    out = r6.render(rec, tpl)
+    assert out.startswith("pure 11 overlay 10 none")
+    assert "calendar.csv" in out
