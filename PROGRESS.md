@@ -132,8 +132,8 @@ Next: review, then F4 part B (`python -m forecast.run_f4_holdout`, once, from th
 
 ## F4 part B: one-shot holdout (done 2026-10-15)
 
-- `python -m forecast.run_f4_holdout` ran once from the clean commit 1a31ed9 (about 1 min). It wrote
-  `results/f4_holdout.json` (committed in c38584c) and, for F5,
+- `python -m forecast.run_f4_holdout` ran once from the clean commit 1e348f0 (about 1 min). It wrote
+  `results/f4_holdout.json` (committed in 3c9c8ae) and, for F5,
   `data/processed/f4_holdout_forecasts.parquet` (gitignored).
 - `src/forecast/render_f4_holdout.py` + `docs/templates/F4_holdout.md` render
   `docs/F4_holdout.md` and `docs/figures/f4_holdout_vs_backtest.png` from the saved results only.
@@ -211,7 +211,7 @@ Built:
 Clean-clone check (`docs/F6_reproducibility.md`): fresh clone and venv (Python 3.13.5, pip check clean),
 raw sha256s match; F1-F6 rerun. results/: 16 of 16 match (15 byte-identical, f4_backtest.json differs
 only in run-time fields). Across results/, config/, docs/ and README.md, 57 of 58 match; the one other
-file is the run-time paragraph of docs/F4_model_backtest.md. The frozen 1a31ed9 holdout code, re-run in
+file is the run-time paragraph of docs/F4_model_backtest.md. The frozen 1e348f0 holdout code, re-run in
 a separate clone, reproduced results/f4_holdout.json (run-time fields aside) and a byte-identical
 forecasts parquet. 176 unit and 18 real-data tests pass in the clone.
 
@@ -224,7 +224,7 @@ wording fixed ("not observed results"), a wording test for the app added (177 un
 Portfolio-view screenshot (aggregates only) added to the README.
 
 Pure clean-clone check (2026-10-16, `docs/F6_reproducibility.md`): `git clone` of the pushed HEAD
-a831acc from GitHub, no overlay, fresh venv, full pipeline including the separate-clone 1a31ed9
+d83cf6b from GitHub, no overlay, fresh venv, full pipeline including the separate-clone 1e348f0
 holdout re-run. 61 of 62 compared files match (60 byte-identical; results/f4_backtest.json differs only
 in run-time fields); the one other file is the run-time paragraph of docs/F4_model_backtest.md. The
 holdout re-run matched results/f4_holdout.json (run-time fields aside) with a byte-identical forecasts
@@ -244,7 +244,7 @@ python3 -m venv .venv
 .venv/bin/python -m forecast.run_f2
 .venv/bin/python -m forecast.run_f3
 .venv/bin/python -m forecast.run_f4      # about 40 min
-# holdout forecasts: re-run the frozen code of 1a31ed9 in a separate clone (README step 4);
+# holdout forecasts: re-run the frozen code of 1e348f0 in a separate clone (README step 4);
 # never run forecast.run_f4_holdout in the working copy (it refuses anyway)
 .venv/bin/python -m forecast.run_f5
 .venv/bin/python -m forecast.first_sale_week

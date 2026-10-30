@@ -156,7 +156,7 @@ def test_f4_results_are_consistent():
 def test_f4_holdout_result_is_consistent():
     r = json.loads((ROOT / "results" / "f4_holdout.json").read_text())
     final = config.load("model_final")
-    assert r["commit"].startswith("1a31ed9")                          # the frozen part-A commit
+    assert r["commit"].startswith("1e348f0")                          # the frozen part-A commit
     assert r["model_final"] == final                                  # scored with the frozen settings
     assert r["setup"]["holdout_days"] == [1914, 1941] and r["setup"]["forecast_origin"] == 1913
     assert r["setup"]["best_baseline_from_backtest"] == json.loads(

@@ -47,7 +47,7 @@ Cloned from GitHub at `{{p.r.clone.head}}`, with nothing copied over it (clean r
 {{table:p_raw}}
 
 4. `run_f1`, `run_f2`, `run_f3`, `run_f4` (the full backtest grid).
-5. README step 4: a separate `git clone` of the clone, checked out at 1a31ed9 in `.tmp/` (clean tree
+5. README step 4: a separate `git clone` of the clone, checked out at 1e348f0 in `.tmp/` (clean tree
    before the run: {{p.r.holdout_rerun.tree_clean_before_run}}), given the raw files and
    `m5_slice.parquet`; `run_f4_holdout` ran there and its forecasts parquet was copied back.
 6. `run_f5`, `first_sale_week`, `run_f6`, `render_f6_check`, then `pytest` and `pytest -m realdata`.

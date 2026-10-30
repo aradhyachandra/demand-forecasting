@@ -49,7 +49,7 @@ flowchart LR
     B --> C[F2 Demand patterns<br/>classes, calendar, price]
     B --> D[F3 Baselines<br/>rolling 4-window backtest]
     D --> E[F4 LightGBM global model<br/>tuned on backtest, frozen]
-    E --> F[One-shot holdout<br/>28 days, commit 1a31ed9]
+    E --> F[One-shot holdout<br/>28 days, commit 1e348f0]
     F --> G[F5 Inventory simulation<br/>order-up-to, scenarios]
     G --> H[F6 Report, dashboard]
 ```
@@ -96,16 +96,16 @@ python3 -m venv .venv
 4. **The holdout forecasts.** `results/f4_holdout.json` is committed and `forecast.run_f4_holdout`
    refuses to score the holdout a second time. Its per-item forecasts (needed by F5 and the dashboard)
    are not committed, because they contain item-level sales. Rebuild them by running the frozen code
-   of commit `1a31ed9` in a separate scratch clone (`.tmp/` is gitignored); nothing in
+   of commit `1e348f0` in a separate scratch clone (`.tmp/` is gitignored); nothing in
    your working copy changes:
 
 ```bash
-git clone . .tmp/holdout-1a31ed9 && git -C .tmp/holdout-1a31ed9 checkout 1a31ed9
-mkdir -p .tmp/holdout-1a31ed9/data/processed
-cp -R data/raw .tmp/holdout-1a31ed9/data/raw
-cp data/processed/m5_slice.parquet .tmp/holdout-1a31ed9/data/processed/
-(cd .tmp/holdout-1a31ed9 && PYTHONPATH=src ../../.venv/bin/python -m forecast.run_f4_holdout)
-cp .tmp/holdout-1a31ed9/data/processed/f4_holdout_forecasts.parquet data/processed/
+git clone . .tmp/holdout-1e348f0 && git -C .tmp/holdout-1e348f0 checkout 1e348f0
+mkdir -p .tmp/holdout-1e348f0/data/processed
+cp -R data/raw .tmp/holdout-1e348f0/data/raw
+cp data/processed/m5_slice.parquet .tmp/holdout-1e348f0/data/processed/
+(cd .tmp/holdout-1e348f0 && PYTHONPATH=src ../../.venv/bin/python -m forecast.run_f4_holdout)
+cp .tmp/holdout-1e348f0/data/processed/f4_holdout_forecasts.parquet data/processed/
 ```
 
 5. **Inventory, report and tests:**

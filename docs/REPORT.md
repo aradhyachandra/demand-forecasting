@@ -71,7 +71,7 @@ the steps.
   flag). Even on priced days, 48.2% have no sale.
 - **The holdout.** The last 28 days, d_1914 to d_1941
   (2016-04-25 to 2016-05-22), were set aside at the start. Every method was built
-  and tuned on earlier data, then frozen in commit `1a31ed9` and scored on the holdout once
+  and tuned on earlier data, then frozen in commit `1e348f0` and scored on the holdout once
   (1.1 minutes). Nothing was changed after that run.
 
 ## 3. Demand patterns

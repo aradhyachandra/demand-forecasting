@@ -3,7 +3,7 @@
     "checked_on": "2026-10-16",
     "clone": {
       "source": "git clone https://github.com/aradhyachandra/demand-forecasting (pushed HEAD), no overlay",
-      "head": "a831acc",
+      "head": "d83cf6b",
       "clean_after_clone": true,
       "python": "3.13.5",
       "pip_check": "No broken requirements found.",
@@ -52,7 +52,7 @@
         "peak_footprint_mb": 3729.100616
       },
       {
-        "step": "run_f4_holdout at 1a31ed9",
+        "step": "run_f4_holdout at 1e348f0",
         "seconds": 35,
         "max_resident_mb": 1707.753472,
         "peak_footprint_mb": 3496.693024
@@ -84,10 +84,10 @@
     ],
     "holdout_rerun": {
       "option": "b",
-      "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
-      "scratch_path": "<temp folder>/repo/.tmp/holdout-1a31ed9 (a separate git clone, checked out at 1a31ed9)",
+      "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
+      "scratch_path": "<temp folder>/repo/.tmp/holdout-1e348f0 (a separate git clone, checked out at 1e348f0)",
       "tree_clean_before_run": true,
-      "module_file": "<temp folder>/repo/.tmp/holdout-1a31ed9/src/forecast/__init__.py",
+      "module_file": "<temp folder>/repo/.tmp/holdout-1e348f0/src/forecast/__init__.py",
       "comparison": {
         "status": "same_ignoring_run_info",
         "differing_paths": [],
@@ -97,12 +97,12 @@
           "started_utc"
         ],
         "committed": {
-          "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
+          "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
           "started_utc": "2026-10-15T12:18:52+00:00",
           "run_minutes": 1.1
         },
         "rerun": {
-          "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
+          "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
           "started_utc": "2026-10-16T05:55:39+00:00",
           "run_minutes": 0.6
         }
@@ -208,8 +208,8 @@
         {
           "file": "f4_holdout.json",
           "status": "identical",
-          "sha256_first": "dcd5787159569d816e2a58c3b2b88ded1cdfafe9a0393846e7b704cbc80e20d8",
-          "sha256_second": "dcd5787159569d816e2a58c3b2b88ded1cdfafe9a0393846e7b704cbc80e20d8"
+          "sha256_first": "b0e7c16e863df7ecc2860543ce34fe348013e3db095361e68195e644570394c8",
+          "sha256_second": "b0e7c16e863df7ecc2860543ce34fe348013e3db095361e68195e644570394c8"
         },
         {
           "file": "f4_summary.csv",
@@ -332,8 +332,8 @@
         {
           "file": "F4_holdout.md",
           "status": "identical",
-          "sha256_first": "c938cbe39275072dcf38d2a021928441fb151422b8857ce112b31795664756cf",
-          "sha256_second": "c938cbe39275072dcf38d2a021928441fb151422b8857ce112b31795664756cf"
+          "sha256_first": "643e9a9c387642dc5dce5535a4c2dce5b46fa96b491cc5cc4bfbf940d6a278c2",
+          "sha256_second": "643e9a9c387642dc5dce5535a4c2dce5b46fa96b491cc5cc4bfbf940d6a278c2"
         },
         {
           "file": "F4_model_backtest.md",
@@ -357,8 +357,8 @@
         {
           "file": "REPORT.md",
           "status": "identical",
-          "sha256_first": "794a10416c442e035ee268d1e74dfd530ed94294749cdb3836fb8c7a6c88c05a",
-          "sha256_second": "794a10416c442e035ee268d1e74dfd530ed94294749cdb3836fb8c7a6c88c05a"
+          "sha256_first": "3b1c596e0d6d7638721c08e265811cb5d8e40b9882fce7ff95ee02b2711af1b4",
+          "sha256_second": "3b1c596e0d6d7638721c08e265811cb5d8e40b9882fce7ff95ee02b2711af1b4"
         },
         {
           "file": "figures/f2_demand_classes.png",
@@ -527,8 +527,8 @@
         {
           "file": "README.md",
           "status": "identical",
-          "sha256_first": "c1972a4fe1fafe4425c839cf92d79623ec14cc3094ad18f2d800cb4509f36c7c",
-          "sha256_second": "c1972a4fe1fafe4425c839cf92d79623ec14cc3094ad18f2d800cb4509f36c7c"
+          "sha256_first": "8bec15b5d4c6245ac3ff271b914b16dfe022389c229aecc66827aa33e9b4d234",
+          "sha256_second": "8bec15b5d4c6245ac3ff271b914b16dfe022389c229aecc66827aa33e9b4d234"
         }
       ]
     }
@@ -537,7 +537,7 @@
     "checked_on": "2026-10-15",
     "clone": {
       "source": "git clone of the local repository",
-      "head": "bd755e7",
+      "head": "18dbe33",
       "python": "3.13.5",
       "pip_check": "No broken requirements found.",
       "overlay_files": [
@@ -609,7 +609,7 @@
         "peak_footprint_mb": 3723.890168
       },
       {
-        "step": "run_f4_holdout at 1a31ed9",
+        "step": "run_f4_holdout at 1e348f0",
         "seconds": 30,
         "max_resident_mb": 1934.032896,
         "peak_footprint_mb": 3706.817848
@@ -635,10 +635,10 @@
     ],
     "holdout_rerun": {
       "option": "b",
-      "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
-      "scratch_path": "<temp folder>/clone/.tmp/holdout-1a31ed9 (a separate git clone, checked out at 1a31ed9)",
+      "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
+      "scratch_path": "<temp folder>/clone/.tmp/holdout-1e348f0 (a separate git clone, checked out at 1e348f0)",
       "tree_clean_before_run": true,
-      "module_file": "<temp folder>/clone/.tmp/holdout-1a31ed9/src/forecast/__init__.py",
+      "module_file": "<temp folder>/clone/.tmp/holdout-1e348f0/src/forecast/__init__.py",
       "comparison": {
         "status": "same_ignoring_run_info",
         "differing_paths": [],
@@ -648,12 +648,12 @@
           "started_utc"
         ],
         "committed": {
-          "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
+          "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
           "started_utc": "2026-10-15T12:18:52+00:00",
           "run_minutes": 1.1
         },
         "rerun": {
-          "commit": "1a31ed9d230b638284fcbbfb118dd80740c6ca0b",
+          "commit": "1e348f03c91d6a5c9800bc638a8a83caad56d061",
           "started_utc": "2026-10-15T14:09:24+00:00",
           "run_minutes": 0.5
         }
@@ -759,8 +759,8 @@
         {
           "file": "f4_holdout.json",
           "status": "identical",
-          "sha256_first": "dcd5787159569d816e2a58c3b2b88ded1cdfafe9a0393846e7b704cbc80e20d8",
-          "sha256_second": "dcd5787159569d816e2a58c3b2b88ded1cdfafe9a0393846e7b704cbc80e20d8"
+          "sha256_first": "b0e7c16e863df7ecc2860543ce34fe348013e3db095361e68195e644570394c8",
+          "sha256_second": "b0e7c16e863df7ecc2860543ce34fe348013e3db095361e68195e644570394c8"
         },
         {
           "file": "f4_summary.csv",
@@ -877,8 +877,8 @@
         {
           "file": "F4_holdout.md",
           "status": "identical",
-          "sha256_first": "c938cbe39275072dcf38d2a021928441fb151422b8857ce112b31795664756cf",
-          "sha256_second": "c938cbe39275072dcf38d2a021928441fb151422b8857ce112b31795664756cf"
+          "sha256_first": "643e9a9c387642dc5dce5535a4c2dce5b46fa96b491cc5cc4bfbf940d6a278c2",
+          "sha256_second": "643e9a9c387642dc5dce5535a4c2dce5b46fa96b491cc5cc4bfbf940d6a278c2"
         },
         {
           "file": "F4_model_backtest.md",
@@ -896,8 +896,8 @@
         {
           "file": "REPORT.md",
           "status": "identical",
-          "sha256_first": "794a10416c442e035ee268d1e74dfd530ed94294749cdb3836fb8c7a6c88c05a",
-          "sha256_second": "794a10416c442e035ee268d1e74dfd530ed94294749cdb3836fb8c7a6c88c05a"
+          "sha256_first": "3b1c596e0d6d7638721c08e265811cb5d8e40b9882fce7ff95ee02b2711af1b4",
+          "sha256_second": "3b1c596e0d6d7638721c08e265811cb5d8e40b9882fce7ff95ee02b2711af1b4"
         },
         {
           "file": "figures/f2_demand_classes.png",

@@ -94,7 +94,7 @@
   data and trains nothing; a test checks that it does not touch `model.load_data` / `model.fit`
   and leaves `results/f4_holdout.json` unchanged.
 - **The part A real-data check no longer asserts that the holdout result is missing.** A new check
-  ties `results/f4_holdout.json` to commit 1a31ed9 and the frozen `model_final.yaml`.
+  ties `results/f4_holdout.json` to commit 1e348f0 and the frozen `model_final.yaml`.
 
 ## Decisions in F5
 
@@ -145,11 +145,11 @@
   to download from Kaggle; the inventory and portfolio views still work.
 - **streamlit 1.66.0 and altair 6.3.0 pinned**; `pip install --dry-run` showed no change to any
   existing pin (pyarrow stays 25.0.1).
-- **Clean-clone check, option (b):** the frozen holdout code was re-run at 1a31ed9 in a separate
+- **Clean-clone check, option (b):** the frozen holdout code was re-run at 1e348f0 in a separate
   `git clone` inside the temp folder (not a worktree of the real repo); its JSON matched the committed
   one except run-time fields, and its forecasts parquet was byte-identical. Nothing was changed because
   of it. README step 4 documents the same procedure. Details: `docs/F6_reproducibility.md`.
-- **Pure clean-clone check (2026-10-16):** repeated on a plain `git clone` of the pushed a831acc from
+- **Pure clean-clone check (2026-10-16):** repeated on a plain `git clone` of the pushed d83cf6b from
   GitHub with nothing copied over it, compared against that commit's own files. Same outcome as the
   overlay check (only run-time fields and the F4 run-time paragraph differ). `results/f6_clean_clone_check.json`
   now holds `pure_clone` and, as history, `overlay_check_2026_10_15`. A first attempt was stopped
@@ -168,7 +168,7 @@
 - **Holdout dates:** the final holdout is d_1914 to d_1941 (2016-04-25 to 2016-05-22), the last 28 days
   of `sales_train_evaluation.csv`. These were the competition's public-leaderboard labels. Confirm
   nobody tunes on them before the one F4 run.
-  *Done 2026-10-15: scored once by `run_f4_holdout` from commit 1a31ed9 (result committed in c38584c);
+  *Done 2026-10-15: scored once by `run_f4_holdout` from commit 1e348f0 (result committed in 3c9c8ae);
   nothing was tuned on it.*
 - **Python on the Mac:** dependencies were tested on Python 3.10 on the remote machine; the pinned
   versions publish wheels for Python 3.13 (your Mac). Confirm `pip install -r requirements.txt` works there.

@@ -16,8 +16,8 @@ On the holdout the best baseline is SBA (0.833), not TSB (0.839). The comparison
 
 ## How it was run
 
-- **From a frozen commit.** `python -m forecast.run_f4_holdout` ran once, from commit `1a31ed9`
-  (`1a31ed9d230b638284fcbbfb118dd80740c6ca0b`), started 2026-10-15T12:18:52+00:00. It refuses to run if the git tree is not clean, and refuses
+- **From a frozen commit.** `python -m forecast.run_f4_holdout` ran once, from commit `1e348f0`
+  (`1e348f03c91d6a5c9800bc638a8a83caad56d061`), started 2026-10-15T12:18:52+00:00. It refuses to run if the git tree is not clean, and refuses
   a second run because `results/f4_holdout.json` now exists.
 - **The frozen model.** Setting s1_small: 31 leaves, learning rate 0.05, at least 100
   rows per leaf, 200 trees. These come from `config/model_final.yaml`, chosen on the backtest
