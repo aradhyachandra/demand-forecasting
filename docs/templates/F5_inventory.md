@@ -107,7 +107,8 @@ Fill rate and average inventory money per group (holdout, central scenario, main
 
 ## 4. Sensitivity: does the ranking survive the assumptions?
 
-Each assumption is moved over its range with the others at their central values ({n_sc} scenarios).
+Each assumption is moved over its range with the others at their central values ({n_sc} distinct settings; the
+central setting appears once per assumption in the table below but is counted once).
 Reviews / measured days change with lead time and review period because of the end-of-horizon rule.
 Fill rate and total cost are at the {sl} target, listed as {pol_cols}.
 

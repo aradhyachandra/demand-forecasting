@@ -175,7 +175,7 @@ Result (every number in `docs/F5_inventory.md`, simulated under the config assum
 central scenario the three policies reach about the same fill rate, and the model-based policy holds
 the least stock. At equal fill rate the model needs less inventory than both baselines in all 20
 sensitivity scenarios and in the pre-holdout check at d_1885. The ranking by total cost at a fixed
-target changes in 4 of 20 scenarios (short review periods, high lost-sale cost). The bias-adjusted
+target changes in 4 of 15 distinct settings (counted as 4 of 20 until 2026-10-30, when the repeated central case was counted once) (short review periods, high lost-sale cost). The bias-adjusted
 safety stock (main method, fixed in advance) did worse than z x sd only in both windows; achieved
 cycle service level is about 3 points below target (see NOTES).
 

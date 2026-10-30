@@ -72,11 +72,15 @@ def values(r: dict) -> dict:
         f"{signed(e_mid.get('lgbm_vs_tsb_pct'))}).")
 
     # sensitivity
-    checks = r["sensitivity_checks"]
-    n_sc = len(checks)
-    lgbm_first = sum(ch["ranking_by_total_cost"][0] == "lgbm" for ch in checks)
-    gaps_tsb = [_ef(ch["equal_fill"], mid).get("lgbm_vs_tsb_pct") for ch in checks]
-    gaps_sn = [_ef(ch["equal_fill"], mid).get("lgbm_vs_seasonal_naive_pct") for ch in checks]
+    checks = r["sensitivity_checks"]          # one row per assumption value (table)
+    # Every assumption's range includes its central value, so the central setting appears once per
+    # assumption; counts use each distinct setting once (same rule as run_f6.sensitivity_summary).
+    central = [ch for ch in checks if ch.get("is_central")]
+    distinct = [ch for ch in checks if not ch.get("is_central")] + central[:1]
+    n_sc = len(distinct)
+    lgbm_first = sum(ch["ranking_by_total_cost"][0] == "lgbm" for ch in distinct)
+    gaps_tsb = [_ef(ch["equal_fill"], mid).get("lgbm_vs_tsb_pct") for ch in distinct]
+    gaps_sn = [_ef(ch["equal_fill"], mid).get("lgbm_vs_seasonal_naive_pct") for ch in distinct]
     gaps_tsb = [g for g in gaps_tsb if g is not None]
     gaps_sn = [g for g in gaps_sn if g is not None]
     sens = {(x["assumption"], str(x["value"]), x["policy"]): x for x in r["sensitivity"]}
@@ -89,9 +93,9 @@ def values(r: dict) -> dict:
         return (f"| {ch['assumption']} | {str(ch['value']).replace('_', ' ')}{mark} | {ch['reviews']} / "
                 f"{ch['measured_days']} | {fr} | {tc} | {' > '.join(lab[p] for p in ch['ranking_by_total_cost'])} | "
                 f"{signed(e.get('lgbm_vs_seasonal_naive_pct'))} | {signed(e.get('lgbm_vs_tsb_pct'))} |")
-    flips = [ch for ch in checks if ch["ranking_by_total_cost"][0] != "lgbm"]
-    flip_text = ("The model-based policy has the lowest total cost in every scenario." if not flips else
-                 f"The model-based policy has the lowest simulated total cost in {lgbm_first} of {n_sc} scenarios. "
+    flips = [ch for ch in distinct if ch["ranking_by_total_cost"][0] != "lgbm"]
+    flip_text = ("The model-based policy has the lowest total cost in every setting." if not flips else
+                 f"The model-based policy has the lowest simulated total cost in {lgbm_first} of {n_sc} settings. "
                  "It is not first in: " + "; ".join(
                      f"{ch['assumption']} = {ch['value']} ({lab[ch['ranking_by_total_cost'][0]]} first)" for ch in flips) +
                  ". " + ("In each of these the cheaper policy reaches a higher fill rate than the model at the same "
@@ -106,7 +110,7 @@ def values(r: dict) -> dict:
                      sens[(ch['assumption'], str(ch['value']), 'lgbm')]['fill_rate'] for ch in flips) else
                  "Not all of these come with a higher fill rate for the winner; see the table."))
     survive = (f"At an equal {mid:.0%} fill rate the model needs less inventory than both baselines in every one of "
-               f"the {len(gaps_tsb)} scenarios: {min(gaps_tsb):+.1f}% to {max(gaps_tsb):+.1f}% against TSB and "
+               f"the {len(gaps_tsb)} settings: {min(gaps_tsb):+.1f}% to {max(gaps_tsb):+.1f}% against TSB and "
                f"{min(gaps_sn):+.1f}% to {max(gaps_sn):+.1f}% against seasonal naive."
                if gaps_tsb and max(gaps_tsb) < 0 and max(gaps_sn) < 0 else
                f"At an equal {mid:.0%} fill rate the model does not need less inventory in every scenario "

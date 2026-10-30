@@ -117,7 +117,8 @@ Fill rate and average inventory money per group (holdout, central scenario, main
 
 ## 4. Sensitivity: does the ranking survive the assumptions?
 
-Each assumption is moved over its range with the others at their central values (20 scenarios).
+Each assumption is moved over its range with the others at their central values (15 distinct settings; the
+central setting appears once per assumption in the table below but is counted once).
 Reviews / measured days change with lead time and review period because of the end-of-horizon rule.
 Fill rate and total cost are at the 95% target, listed as Seasonal naive | TSB | LightGBM.
 
@@ -144,9 +145,9 @@ Fill rate and total cost are at the 95% target, listed as Seasonal naive | TSB |
 | stockout_cost_share_of_price | 0.5 | 3 / 21 | 95.9% / 95.8% / 95.7% | $19,477 / $19,622 / $19,552 | Seasonal naive > LightGBM > TSB | -10.4% | -5.5% |
 | stockout_cost_share_of_price | 1.0 | 3 / 21 | 95.9% / 95.8% / 95.7% | $34,025 / $34,599 / $34,762 | Seasonal naive > TSB > LightGBM | -10.4% | -5.5% |
 
-The model-based policy has the lowest simulated total cost in 16 of 20 scenarios. It is not first in: review_period_days = 1 (Seasonal naive first); review_period_days = 3 (Seasonal naive first); stockout_cost_share_of_price = 0.5 (Seasonal naive first); stockout_cost_share_of_price = 1.0 (Seasonal naive first). In each of these the cheaper policy reaches a higher fill rate than the model at the same nominal target (Seasonal naive 95.3% vs LightGBM 94.1%; Seasonal naive 95.8% vs LightGBM 95.3%; Seasonal naive 95.9% vs LightGBM 95.7%; Seasonal naive 95.9% vs LightGBM 95.7%), because its wider backtest errors give it a bigger safety stock, and the lost sales it avoids are worth more than the extra stock costs. A fixed target therefore does not compare like with like; the comparison at equal fill rate below does.
+The model-based policy has the lowest simulated total cost in 11 of 15 settings. It is not first in: review_period_days = 1 (Seasonal naive first); review_period_days = 3 (Seasonal naive first); stockout_cost_share_of_price = 0.5 (Seasonal naive first); stockout_cost_share_of_price = 1.0 (Seasonal naive first). In each of these the cheaper policy reaches a higher fill rate than the model at the same nominal target (Seasonal naive 95.3% vs LightGBM 94.1%; Seasonal naive 95.8% vs LightGBM 95.3%; Seasonal naive 95.9% vs LightGBM 95.7%; Seasonal naive 95.9% vs LightGBM 95.7%), because its wider backtest errors give it a bigger safety stock, and the lost sales it avoids are worth more than the extra stock costs. A fixed target therefore does not compare like with like; the comparison at equal fill rate below does.
 
-At an equal 95% fill rate the model needs less inventory than both baselines in every one of the 20 scenarios: -7.3% to -4.7% against TSB and -13.8% to -8.7% against seasonal naive.
+At an equal 95% fill rate the model needs less inventory than both baselines in every one of the 15 settings: -7.3% to -4.7% against TSB and -13.8% to -8.7% against seasonal naive.
 
 ![Sensitivity](figures/f5_sensitivity.png)
 
