@@ -35,8 +35,8 @@ and by how much. The answers to the five business questions:
 - **How much safety stock, and what does it cost against today's rule?** Sizing safety stock from
   each method's own backtest errors, the model-based policy needs **5.5% less inventory than TSB
   and 10.4% less than the seasonal-naive rule for the same 95% fill rate** in the holdout
-  simulation ($282,159 vs $298,495 and $315,076). The direction holds on a pre-holdout window and in all 20 assumption scenarios. Ranked by total cost at a fixed target instead, the order
-  changes in 4 of 20 scenarios, so the money answer depends on the assumptions.
+  simulation ($282,159 vs $298,495 and $315,076). The direction holds on a pre-holdout window and in all 15 assumption settings. Ranked by total cost at a fixed target instead, the order
+  changes in 4 of 15 assumption settings, so the money answer depends on the assumptions.
 - **Where is the money?** Lost sales are concentrated: only 1,023 of 5,746 item-stores
   lose any sale, and the top 10% carry 93% of the lost-sales cost. Intermittent
   items carry 49% of it for 34% of demand. Inventory money is spread much like
@@ -245,7 +245,8 @@ naive and 6.5% less than TSB, with the lowest simulated total cost (LightGBM > T
 
 ### 6.3 Does it survive the assumptions?
 
-Each assumption was moved over its range with the others central (20 scenarios):
+15 assumption settings (each assumption moved over its range, others central; the central
+setting is counted once):
 
 ![Sensitivity](figures/f5_sensitivity.png)
 
@@ -267,10 +268,10 @@ Each assumption was moved over its range with the others central (20 scenarios):
 | lost-sale cost 50% of price | Seasonal naive > LightGBM > TSB | -10.4% | -5.5% |
 | lost-sale cost 100% of price | Seasonal naive > TSB > LightGBM | -10.4% | -5.5% |
 
-- **Inventory at equal fill rate:** the model needs less in every one of the 20
-  scenarios: 4.7% to 7.3% less than TSB and 8.7% to 13.8% less than seasonal naive.
-- **Total cost at a fixed target:** the model-based policy is cheapest in 16 of
-  20. It is not in 4: review every 1 day (Seasonal naive cheapest); review every 3 days (Seasonal naive cheapest); lost-sale cost 50% of price (Seasonal naive cheapest); lost-sale cost 100% of price (Seasonal naive cheapest). In those, the cheaper policy's wider
+- **Inventory at equal fill rate:** the model needs less in every one of the 15
+  settings: 4.7% to 7.3% less than TSB and 8.7% to 13.8% less than seasonal naive.
+- **Total cost at a fixed target:** the model-based policy is cheapest in 11 of
+  15. It is not in 4: review every 1 day (Seasonal naive cheapest); review every 3 days (Seasonal naive cheapest); lost-sale cost 50% of price (Seasonal naive cheapest); lost-sale cost 100% of price (Seasonal naive cheapest). In those, the cheaper policy's wider
   errors give it more safety stock and a higher fill rate, and the lost sales it avoids are worth more
   than the extra stock costs. That is a property of the target, not of the forecast, which is why the
   equal-fill comparison comes first.

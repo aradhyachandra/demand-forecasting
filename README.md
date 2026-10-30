@@ -36,8 +36,8 @@ safety stock sized from backtest errors (lead time 2 days, weekly review).
    +10.5%, Thanksgiving -25%). Price effects cannot be measured cleanly: M5 prices
    only change in weeks with sales.
 4. **At an equal 95% fill rate the model-based policy needs 5.5% less inventory than TSB
-   and 10.4% less than seasonal naive** (simulated). The direction holds on a pre-holdout window and in all 20 assumption scenarios; ranked by total cost at a fixed target, the order changes in
-   4 of 20.
+   and 10.4% less than seasonal naive** (simulated). The direction holds on a pre-holdout window and in all 15 assumption settings; ranked by total cost at a fixed target, the order changes in
+   4 of 15 (each assumption moved over its range, others central).
 5. **Lost sales are concentrated:** the top 10% of item-stores carry 93% of the
    lost-sales cost; intermittent items carry 49% of it for 34% of demand.
 

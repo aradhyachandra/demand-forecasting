@@ -25,6 +25,24 @@ def test_sensitivity_summary_by_hand():
     assert s["seasonal_naive_min"] == -12 and s["seasonal_naive_max"] == -10
 
 
+def test_sensitivity_summary_counts_the_central_case_once():
+    def check(assumption, value, central, rank, tsb):
+        return {"assumption": assumption, "value": value, "is_central": central, "ranking_by_total_cost": rank,
+                "equal_fill": [{"fill_rate": 0.95, "lgbm_vs_tsb_pct": tsb, "lgbm_vs_seasonal_naive_pct": -9}]}
+    central = (["lgbm", "tsb"], -5)
+    checks = [check("lead_time_days", 1, False, ["tsb", "lgbm"], -4), check("lead_time_days", 2, True, *central),
+              check("review_period_days", 3, False, ["lgbm", "tsb"], -6), check("review_period_days", 7, True, *central),
+              check("unmet_demand", "lost_sales", True, *central)]
+    s = run_f6.sensitivity_summary(checks, 0.95)
+    assert s["n"] == 3 and s["lgbm_first"] == 2 and len(s["not_first"]) == 1
+
+
+def test_sensitivity_count_on_saved_results_is_distinct_settings():
+    checks = run_f6.load_results()["f5"]["sensitivity_checks"]
+    s = run_f6.sensitivity_summary(checks, 0.95)
+    assert s["n"] == len([c for c in checks if not c["is_central"]]) + 1
+
+
 def test_weekly_errors_and_slice_bias():
     h = {"weekly_totals": [{"baseline": "lgbm", "forecast": 90, "actual": 100},
                            {"baseline": "lgbm", "forecast": 110, "actual": 100},

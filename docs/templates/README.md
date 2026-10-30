@@ -33,7 +33,7 @@ safety stock sized from backtest errors (lead time {{t.lead}} days, weekly revie
    only change in weeks with sales.
 4. **At an equal {{t.sl}} fill rate the model-based policy needs {{t.e_gap_tsb}} inventory than TSB
    and {{t.e_gap_sn}} than seasonal naive** (simulated). {{t.direction_text}}; ranked by total cost at a fixed target, the order changes in
-   {{t.sc_flips}} of {{t.n_sc}}.
+   {{t.sc_flips}} of {{t.n_sc}} (each assumption moved over its range, others central).
 5. **Lost sales are concentrated:** the top {{t.top_share}} of item-stores carry {{t.top_lost}} of the
    lost-sales cost; intermittent items carry {{t.int_lost}} of it for {{t.int_dem}} of demand.
 

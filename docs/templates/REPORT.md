@@ -36,7 +36,7 @@ and by how much. The answers to the five business questions:
   each method's own backtest errors, the model-based policy needs **{{t.e_gap_tsb}} inventory than TSB
   and {{t.e_gap_sn}} than the seasonal-naive rule for the same {{t.sl}} fill rate** in the holdout
   simulation ({{t.e_lgbm}} vs {{t.e_tsb}} and {{t.e_sn}}). {{t.direction_text}}. Ranked by total cost at a fixed target instead, the order
-  changes in {{t.sc_flips}} of {{t.n_sc}} scenarios, so the money answer depends on the assumptions.
+  changes in {{t.sc_flips}} of {{t.n_sc}} assumption settings, so the money answer depends on the assumptions.
 - **Where is the money?** Lost sales are concentrated: only {{t.n_lost}} of {{t.n_sim}} item-stores
   lose any sale, and the top {{t.top_share}} carry {{t.top_lost}} of the lost-sales cost. Intermittent
   items carry {{t.int_lost}} of it for {{t.int_dem}} of demand. Inventory money is spread much like
@@ -205,14 +205,15 @@ naive and {{t.inv_gap_tsb}} than TSB, {{t.central_cost_text}} ({{t.hold_ranking}
 
 ### 6.3 Does it survive the assumptions?
 
-Each assumption was moved over its range with the others central ({{t.n_sc}} scenarios):
+{{t.n_sc}} assumption settings (each assumption moved over its range, others central; the central
+setting is counted once):
 
 ![Sensitivity](figures/f5_sensitivity.png)
 
 {{table:sensitivity}}
 
 - **Inventory at equal fill rate:** the model needs less in {{t.sc_always}} of the {{t.n_sc}}
-  scenarios: {{t.sc_tsb_range}} than TSB and {{t.sc_sn_range}} than seasonal naive.
+  settings: {{t.sc_tsb_range}} than TSB and {{t.sc_sn_range}} than seasonal naive.
 - **Total cost at a fixed target:** the model-based policy is cheapest in {{t.sc_lgbm_first}} of
   {{t.n_sc}}. It is not in {{t.sc_flips}}: {{t.sc_flip_list}}. In those, the cheaper policy's wider
   errors give it more safety stock and a higher fill rate, and the lost sales it avoids are worth more

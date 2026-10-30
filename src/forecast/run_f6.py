@@ -62,7 +62,10 @@ def equal_fill(rows: list[dict], fill: float) -> dict:
 
 def sensitivity_summary(checks: list[dict], fill: float) -> dict:
     """How often the model-based policy is cheapest at a fixed target, which scenarios are not, and the
-    range of its inventory gap at an equal fill rate."""
+    range of its inventory gap at an equal fill rate. Every assumption's range includes the central
+    value, so the central setting appears once per assumption; it is counted once."""
+    central = [c for c in checks if c.get("is_central")]
+    checks = [c for c in checks if not c.get("is_central")] + central[:1]
     not_first = [c for c in checks if c["ranking_by_total_cost"][0] != "lgbm"]
     gaps = {ref: [equal_fill(c["equal_fill"], fill)[f"lgbm_vs_{ref}_pct"] for c in checks]
             for ref in ("tsb", "seasonal_naive")}
@@ -105,9 +108,9 @@ def gap_range(a: float, b: float) -> str:
 def direction_text(sens: dict, robustness_fill: dict) -> str:
     rob = robustness_fill["lgbm_vs_tsb_pct"] < 0 and robustness_fill["lgbm_vs_seasonal_naive_pct"] < 0
     if rob and sens["always_less"]:
-        return f"The direction holds on a pre-holdout window and in all {sens['n']} assumption scenarios"
+        return f"The direction holds on a pre-holdout window and in all {sens['n']} assumption settings"
     return (f"The direction {'holds' if rob else 'does not hold'} on a pre-holdout window and "
-            f"{'holds' if sens['always_less'] else 'does not hold'} in every one of {sens['n']} assumption scenarios")
+            f"{'holds' if sens['always_less'] else 'does not hold'} in every one of {sens['n']} assumption settings")
 
 
 def class_text(h: dict, ref: str) -> str:
