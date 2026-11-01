@@ -122,7 +122,7 @@
   main-method curves on the holdout within the sweep (up to 99.5% target), so it is reported as n/a.
 - **Ranking is reported two ways:** total cost at the same target (changes in 4 of 15 distinct settings,
   because a fixed target gives the naive policy, with wider errors, more stock and a higher fill
-  rate) and inventory at equal fill rate (model lowest in all 20). The second is the like-for-like one.
+  rate) and inventory at equal fill rate (model lowest in all 15 distinct settings). The second is the like-for-like one.
 
 ## Decisions in F6
 

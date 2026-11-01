@@ -68,3 +68,19 @@ def test_runner_top_revenue_flag_and_exclusion():
     m = r.measures("tsb", s)
     assert len(m) == 2 and m["top_revenue"].tolist() == [False, True]   # of a and b, b has the larger weight
     assert m["lost"].sum() == 0   # forecast = demand, no error: nothing is lost
+
+
+def test_f5_doc_counts_the_central_sensitivity_setting_once():
+    import json
+
+    from forecast import render_f5
+    from forecast.config import ROOT
+    r = json.loads((ROOT / "results" / "f5_inventory.json").read_text(encoding="utf-8"))
+    checks = r["sensitivity_checks"]
+    distinct = [c for c in checks if not c["is_central"]] + [c for c in checks if c["is_central"]][:1]
+    assert len(checks) > len(distinct)                      # the central setting repeats per assumption
+    v = render_f5.values(r)
+    first = sum(c["ranking_by_total_cost"][0] == "lgbm" for c in distinct)
+    assert v["n_sc"] == len(distinct)
+    assert f"in {first} of {len(distinct)} settings" in v["flip_text"]
+    assert f"every one of the {len(distinct)} settings" in v["survive"]
