@@ -75,12 +75,16 @@ def values(r: dict) -> dict:
     checks = r["sensitivity_checks"]          # one row per assumption value (table)
     # Every assumption's range includes its central value, so the central setting appears once per
     # assumption; counts use each distinct setting once (same rule as run_f6.sensitivity_summary).
+    from forecast.run_f6 import COST_ONLY_ASSUMPTIONS
     central = [ch for ch in checks if ch.get("is_central")]
     distinct = [ch for ch in checks if not ch.get("is_central")] + central[:1]
     n_sc = len(distinct)
+    # cost-only settings never change the simulated stock, so the equal-fill check uses the others
+    physical = [ch for ch in distinct if ch["assumption"] not in COST_ONLY_ASSUMPTIONS]
+    n_phys, n_cost = len(physical), n_sc - len(physical)
     lgbm_first = sum(ch["ranking_by_total_cost"][0] == "lgbm" for ch in distinct)
-    gaps_tsb = [_ef(ch["equal_fill"], mid).get("lgbm_vs_tsb_pct") for ch in distinct]
-    gaps_sn = [_ef(ch["equal_fill"], mid).get("lgbm_vs_seasonal_naive_pct") for ch in distinct]
+    gaps_tsb = [_ef(ch["equal_fill"], mid).get("lgbm_vs_tsb_pct") for ch in physical]
+    gaps_sn = [_ef(ch["equal_fill"], mid).get("lgbm_vs_seasonal_naive_pct") for ch in physical]
     gaps_tsb = [g for g in gaps_tsb if g is not None]
     gaps_sn = [g for g in gaps_sn if g is not None]
     sens = {(x["assumption"], str(x["value"]), x["policy"]): x for x in r["sensitivity"]}
@@ -110,8 +114,10 @@ def values(r: dict) -> dict:
                      sens[(ch['assumption'], str(ch['value']), 'lgbm')]['fill_rate'] for ch in flips) else
                  "Not all of these come with a higher fill rate for the winner; see the table."))
     survive = (f"At an equal {mid:.0%} fill rate the model needs less inventory than both baselines in every one of "
-               f"the {len(gaps_tsb)} settings: {min(gaps_tsb):+.1f}% to {max(gaps_tsb):+.1f}% against TSB and "
-               f"{min(gaps_sn):+.1f}% to {max(gaps_sn):+.1f}% against seasonal naive."
+               f"the {len(gaps_tsb)} settings that change the simulated stock: {min(gaps_tsb):+.1f}% to "
+               f"{max(gaps_tsb):+.1f}% against TSB and {min(gaps_sn):+.1f}% to {max(gaps_sn):+.1f}% against "
+               f"seasonal naive. The {n_cost} cost-only settings (holding and lost-sale cost) repeat the central "
+               f"stock figures, so they cannot test this."
                if gaps_tsb and max(gaps_tsb) < 0 and max(gaps_sn) < 0 else
                f"At an equal {mid:.0%} fill rate the model does not need less inventory in every scenario "
                f"(against TSB {min(gaps_tsb):+.1f}% to {max(gaps_tsb):+.1f}%).")
@@ -255,7 +261,7 @@ def values(r: dict) -> dict:
         "class_rows": class_rows("holdout"),
         "dept_rows": group_rows("by_dept", sorted(main[pols[0]]["by_dept"])),
         "rev_rows": group_rows("by_revenue", ["top", "rest"]).replace("| top |", f"| top {pct(r['top_revenue_share'], 0)} by revenue |").replace("| rest |", "| other items |"),
-        "n_sc": n_sc, "sens_rows": "\n".join(sens_row(ch) for ch in checks), "flip_text": flip_text, "survive": survive,
+        "n_sc": n_sc, "n_phys": n_phys, "n_cost": n_cost, "sens_rows": "\n".join(sens_row(ch) for ch in checks), "flip_text": flip_text, "survive": survive,
         "conc_rows": conc_rows, "mclass_rows": mclass_rows, "mrev_rows": mrev_rows, "money_text": money_text,
         "conc": pct(r["concentration_share"], 0),
         "bias_rows": bias_rows, "bias_text": bias_text, "ss_rows": ss_rows,

@@ -138,8 +138,8 @@ All in `config/`, each with a written reason. The inventory ones are judgement c
 - One 28-day holdout from a single forecast day; the inventory simulation covers {{t.n_reviews}}
   weekly reviews.
 - The model under-forecasts total demand ({{t.bias_h_abs}} low on the holdout total).
-- Achieved cycle service is about {{t.csl_lgbm}} against a {{t.sl}} target: the normal safety factor
-  under-covers skewed, intermittent demand.
+- Achieved cycle service is about {{t.csl_lgbm}} against a {{t.sl}} target, likely because the normal
+  safety factor under-covers skewed, intermittent demand (not tested).
 - Cost and lead-time assumptions are judgement calls; money figures are simulated outcomes.
 - Price and event effects are associations; the SNAP lift cannot be separated from other early-month
   income; M5 prices change only in weeks with sales.

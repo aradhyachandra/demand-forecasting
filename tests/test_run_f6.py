@@ -41,6 +41,14 @@ def test_sensitivity_count_on_saved_results_is_distinct_settings():
     checks = run_f6.load_results()["f5"]["sensitivity_checks"]
     s = run_f6.sensitivity_summary(checks, 0.95)
     assert s["n"] == len([c for c in checks if not c["is_central"]]) + 1
+    cost = [c for c in checks if c["assumption"] in run_f6.COST_ONLY_ASSUMPTIONS and not c["is_central"]]
+    assert s["n_cost_only"] == len(cost) and s["n_physical"] == s["n"] - len(cost)
+    central = [c for c in checks if c["is_central"]]
+    for c in central[1:]:                                  # the repeated central rows are the same setting
+        assert c["ranking_by_total_cost"] == central[0]["ranking_by_total_cost"]
+        assert c["equal_fill"] == central[0]["equal_fill"]
+    for c in cost:                                         # cost-only settings never change the stock
+        assert c["equal_fill"] == central[0]["equal_fill"]
 
 
 def test_weekly_errors_and_slice_bias():

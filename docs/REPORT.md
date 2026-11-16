@@ -35,7 +35,7 @@ and by how much. The answers to the five business questions:
 - **How much safety stock, and what does it cost against today's rule?** Sizing safety stock from
   each method's own backtest errors, the model-based policy needs **5.5% less inventory than TSB
   and 10.4% less than the seasonal-naive rule for the same 95% fill rate** in the holdout
-  simulation ($282,159 vs $298,495 and $315,076). The direction holds on a pre-holdout window and in all 15 assumption settings. Ranked by total cost at a fixed target instead, the order
+  simulation ($282,159 vs $298,495 and $315,076). The direction holds on a pre-holdout window and in all 10 assumption settings that change the simulated stock (the 5 cost-only settings repeat the central stock figures). Ranked by total cost at a fixed target instead, the order
   changes in 4 of 15 assumption settings, so the money answer depends on the assumptions.
 - **Where is the money?** Lost sales are concentrated: only 1,023 of 5,746 item-stores
   lose any sale, and the top 10% carry 93% of the lost-sales cost. Intermittent
@@ -268,8 +268,10 @@ setting is counted once):
 | lost-sale cost 50% of price | Seasonal naive > LightGBM > TSB | -10.4% | -5.5% |
 | lost-sale cost 100% of price | Seasonal naive > TSB > LightGBM | -10.4% | -5.5% |
 
-- **Inventory at equal fill rate:** the model needs less in every one of the 15
-  settings: 4.7% to 7.3% less than TSB and 8.7% to 13.8% less than seasonal naive.
+- **Inventory at equal fill rate:** the model needs less in every one of the 10
+  settings that change the simulated stock: 4.7% to 7.3% less than TSB and 8.7% to 13.8% less than
+  seasonal naive. The 5 cost-only settings (holding and lost-sale cost) repeat the central
+  stock figures, so they cannot test this.
 - **Total cost at a fixed target:** the model-based policy is cheapest in 11 of
   15. It is not in 4: review every 1 day (Seasonal naive cheapest); review every 3 days (Seasonal naive cheapest); lost-sale cost 50% of price (Seasonal naive cheapest); lost-sale cost 100% of price (Seasonal naive cheapest). In those, the cheaper policy's wider
   errors give it more safety stock and a higher fill rate, and the lost sales it avoids are worth more
@@ -314,8 +316,8 @@ setting is counted once):
    95% fill rate with 12.6% less stock ($246,684). A pooled bias correction (by class
    or for the slice) should be chosen on the backtest windows, not on this holdout.
 3. **Size safety stock from the error distribution, not the normal curve.** The achieved cycle
-   service level was 91.8% to 92.2% against a 95% target for every policy, because
-   summed errors of intermittent items are skewed. Empirical quantiles of the backtest errors are the
+   service level was 91.8% to 92.2% against a 95% target for every policy, likely because
+   summed errors of intermittent items are skewed (not tested). Empirical quantiles of the backtest errors are the
    simple fix.
 4. **Focus on where lost sales sit:** intermittent and erratic items and FOODS_1 lose more than their
    share; review their order rules and shelf space first.

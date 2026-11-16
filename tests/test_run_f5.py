@@ -83,4 +83,7 @@ def test_f5_doc_counts_the_central_sensitivity_setting_once():
     first = sum(c["ranking_by_total_cost"][0] == "lgbm" for c in distinct)
     assert v["n_sc"] == len(distinct)
     assert f"in {first} of {len(distinct)} settings" in v["flip_text"]
-    assert f"every one of the {len(distinct)} settings" in v["survive"]
+    physical = [c for c in distinct if c["assumption"] not in ("holding_cost_rate_per_year", "stockout_cost_share_of_price")]
+    assert len(physical) < len(distinct)                  # the cost-only settings do not change the stock
+    assert v["n_phys"] == len(physical) and v["n_cost"] == len(distinct) - len(physical)
+    assert f"every one of the {len(physical)} settings that change the simulated stock" in v["survive"]

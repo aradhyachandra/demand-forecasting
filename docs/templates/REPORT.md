@@ -212,8 +212,10 @@ setting is counted once):
 
 {{table:sensitivity}}
 
-- **Inventory at equal fill rate:** the model needs less in {{t.sc_always}} of the {{t.n_sc}}
-  settings: {{t.sc_tsb_range}} than TSB and {{t.sc_sn_range}} than seasonal naive.
+- **Inventory at equal fill rate:** the model needs less in {{t.sc_always}} of the {{t.n_phys}}
+  settings that change the simulated stock: {{t.sc_tsb_range}} than TSB and {{t.sc_sn_range}} than
+  seasonal naive. The {{t.n_cost}} cost-only settings (holding and lost-sale cost) repeat the central
+  stock figures, so they cannot test this.
 - **Total cost at a fixed target:** the model-based policy is cheapest in {{t.sc_lgbm_first}} of
   {{t.n_sc}}. It is not in {{t.sc_flips}}: {{t.sc_flip_list}}. In those, the cheaper policy's wider
   errors give it more safety stock and a higher fill rate, and the lost sales it avoids are worth more
@@ -248,8 +250,8 @@ setting is counted once):
    {{t.sl}} fill rate with {{t.z_vs_main}} stock ({{t.z_e_lgbm}}). A pooled bias correction (by class
    or for the slice) should be chosen on the backtest windows, not on this holdout.
 3. **Size safety stock from the error distribution, not the normal curve.** The achieved cycle
-   service level was {{t.csl_min}} to {{t.csl_max}} against a {{t.sl}} target for every policy, because
-   summed errors of intermittent items are skewed. Empirical quantiles of the backtest errors are the
+   service level was {{t.csl_min}} to {{t.csl_max}} against a {{t.sl}} target for every policy, likely because
+   summed errors of intermittent items are skewed (not tested). Empirical quantiles of the backtest errors are the
    simple fix.
 4. **Focus on where lost sales sit:** intermittent and erratic items and FOODS_1 lose more than their
    share; review their order rules and shelf space first.

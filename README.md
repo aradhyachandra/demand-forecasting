@@ -15,7 +15,7 @@ outcome under stated assumptions.
 
 ## Results (holdout: 2016-04-25 to 2016-05-22, scored once)
 
-| Method | Holdout WRMSSE | Backtest WRMSSE | Fill rate at the 95% target | Inventory needed for 95% fill |
+| Method | Holdout WRMSSE | Backtest WRMSSE | Fill rate reached at the 95% cycle-service target | Inventory for a 95% fill rate (read off its curve) |
 |---|---|---|---|---|
 | Seasonal naive (same weekday last week) | 1.055 | 1.112 | 95.9% | $315,076 |
 | TSB | 0.839 | 0.873 | 95.8% | $298,495 |
@@ -36,7 +36,7 @@ safety stock sized from backtest errors (lead time 2 days, weekly review).
    +10.5%, Thanksgiving -25%). Price effects cannot be measured cleanly: M5 prices
    only change in weeks with sales.
 4. **At an equal 95% fill rate the model-based policy needs 5.5% less inventory than TSB
-   and 10.4% less than seasonal naive** (simulated). The direction holds on a pre-holdout window and in all 15 assumption settings; ranked by total cost at a fixed target, the order changes in
+   and 10.4% less than seasonal naive** (simulated). The direction holds on a pre-holdout window and in all 10 assumption settings that change the simulated stock (the 5 cost-only settings repeat the central stock figures); ranked by total cost at a fixed target, the order changes in
    4 of 15 (each assumption moved over its range, others central).
 5. **Lost sales are concentrated:** the top 10% of item-stores carry 93% of the
    lost-sales cost; intermittent items carry 49% of it for 34% of demand.
@@ -150,8 +150,8 @@ All in `config/`, each with a written reason. The inventory ones are judgement c
 - One 28-day holdout from a single forecast day; the inventory simulation covers 3
   weekly reviews.
 - The model under-forecasts total demand (4.9% low on the holdout total).
-- Achieved cycle service is about 91.8% against a 95% target: the normal safety factor
-  under-covers skewed, intermittent demand.
+- Achieved cycle service is about 91.8% against a 95% target, likely because the normal
+  safety factor under-covers skewed, intermittent demand (not tested).
 - Cost and lead-time assumptions are judgement calls; money figures are simulated outcomes.
 - Price and event effects are associations; the SNAP lift cannot be separated from other early-month
   income; M5 prices change only in weeks with sales.

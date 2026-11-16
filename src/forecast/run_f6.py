@@ -26,6 +26,9 @@ METHOD = {"naive": "Naive (last day)", "seasonal_naive": "Seasonal naive (same w
 CLASSES = ["smooth", "erratic", "intermittent", "lumpy"]
 PRICE_FEATURES = ("price_last", "price_ratio")
 CALENDAR_FEATURES = ("wday", "month", "mday", "snap", "event_name", "event_type", "days_to_event")
+# Assumptions that only enter the cost calculation: moving them never changes the simulated stock or
+# fill rate, so their equal-fill figures repeat the central setting (inventory.series_measures).
+COST_ONLY_ASSUMPTIONS = ("holding_cost_rate_per_year", "stockout_cost_share_of_price")
 
 
 def load_results(results=RESULTS) -> dict:
@@ -63,13 +66,17 @@ def equal_fill(rows: list[dict], fill: float) -> dict:
 def sensitivity_summary(checks: list[dict], fill: float) -> dict:
     """How often the model-based policy is cheapest at a fixed target, which scenarios are not, and the
     range of its inventory gap at an equal fill rate. Every assumption's range includes the central
-    value, so the central setting appears once per assumption; it is counted once."""
+    value, so the central setting appears once per assumption; it is counted once. The equal-fill
+    gaps are summarised over the settings that change the simulated stock only (n_physical): the
+    cost-only settings repeat the central figures and cannot test them."""
     central = [c for c in checks if c.get("is_central")]
     checks = [c for c in checks if not c.get("is_central")] + central[:1]
+    physical = [c for c in checks if c["assumption"] not in COST_ONLY_ASSUMPTIONS]
     not_first = [c for c in checks if c["ranking_by_total_cost"][0] != "lgbm"]
-    gaps = {ref: [equal_fill(c["equal_fill"], fill)[f"lgbm_vs_{ref}_pct"] for c in checks]
+    gaps = {ref: [equal_fill(c["equal_fill"], fill)[f"lgbm_vs_{ref}_pct"] for c in physical]
             for ref in ("tsb", "seasonal_naive")}
-    return {"n": len(checks), "lgbm_first": len(checks) - len(not_first), "not_first": not_first,
+    return {"n": len(checks), "n_physical": len(physical), "n_cost_only": len(checks) - len(physical),
+            "lgbm_first": len(checks) - len(not_first), "not_first": not_first,
             "always_less": all(g < 0 for v in gaps.values() for g in v),
             **{f"{ref}_min": min(v) for ref, v in gaps.items()}, **{f"{ref}_max": max(v) for ref, v in gaps.items()}}
 
@@ -107,10 +114,12 @@ def gap_range(a: float, b: float) -> str:
 
 def direction_text(sens: dict, robustness_fill: dict) -> str:
     rob = robustness_fill["lgbm_vs_tsb_pct"] < 0 and robustness_fill["lgbm_vs_seasonal_naive_pct"] < 0
+    tail = (f"{sens['n_physical']} assumption settings that change the simulated stock (the "
+            f"{sens['n_cost_only']} cost-only settings repeat the central stock figures)")
     if rob and sens["always_less"]:
-        return f"The direction holds on a pre-holdout window and in all {sens['n']} assumption settings"
+        return f"The direction holds on a pre-holdout window and in all {tail}"
     return (f"The direction {'holds' if rob else 'does not hold'} on a pre-holdout window and "
-            f"{'holds' if sens['always_less'] else 'does not hold'} in every one of {sens['n']} assumption settings")
+            f"{'holds' if sens['always_less'] else 'does not hold'} in every one of {tail}")
 
 
 def class_text(h: dict, ref: str) -> str:
@@ -238,7 +247,8 @@ def context(r: dict, inv_cfg: dict) -> tuple[dict, dict]:
         "hold_ranking": " > ".join(POLICY[p] for p in f5["holdout"]["ranking_by_total_cost"]),
         "cost_lgbm": money(main["lgbm"]["total_cost"]), "cost_tsb": money(main["tsb"]["total_cost"]),
         "cost_sn": money(main["seasonal_naive"]["total_cost"]),
-        "n_sc": sens["n"], "sc_lgbm_first": sens["lgbm_first"], "sc_flips": len(sens["not_first"]),
+        "n_sc": sens["n"], "n_phys": sens["n_physical"], "n_cost": sens["n_cost_only"],
+        "sc_lgbm_first": sens["lgbm_first"], "sc_flips": len(sens["not_first"]),
         "sc_flip_list": "; ".join(f"{scenario_name(x)} ({POLICY[x['ranking_by_total_cost'][0]]} cheapest)"
                                   for x in sens["not_first"]),
         "sc_always": "every one" if sens["always_less"] else "not every one",
@@ -370,8 +380,8 @@ def tables(r: dict, inv_cfg: dict) -> dict:
         "assumptions": markdown_table(assumptions, [("a", "Assumption"), ("c", "Central"), ("r", "Range tested"),
                                                     ("why", "Reason (config/inventory.yaml)")]),
         "readme_results": markdown_table(readme, [("m", "Method"), ("h", "Holdout WRMSSE"), ("b", "Backtest WRMSSE"),
-                                                  ("fill", "Fill rate at the 95% target"),
-                                                  ("inv", "Inventory needed for 95% fill")]),
+                                                  ("fill", "Fill rate reached at the 95% cycle-service target"),
+                                                  ("inv", "Inventory for a 95% fill rate (read off its curve)")]),
     }
 
 
